@@ -30,7 +30,7 @@ jobs:
           sudo apt-get install k6
 
       - name: Levantar AUT con Docker Compose
-        run: docker-compose up -d --wait
+        run: docker compose up -d --wait
 
       - name: Ejecutar Suite k6
         working-directory: tests/k6
@@ -45,4 +45,4 @@ jobs:
 
       - name: Detener AUT
         if: always()
-        run: docker-compose down
+        run: docker compose down

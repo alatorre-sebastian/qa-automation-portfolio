@@ -22,7 +22,7 @@ jobs:
           submodules: true
 
       - name: Levantar AUT con Docker Compose
-        run: docker-compose up -d --wait
+        run: docker compose up -d --wait
 
       - name: Instalar dependencias Selenium
         working-directory: tests/selenium
@@ -41,4 +41,4 @@ jobs:
 
       - name: Detener AUT
         if: always()
-        run: docker-compose down
+        run: docker compose down

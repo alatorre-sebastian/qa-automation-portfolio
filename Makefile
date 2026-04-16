@@ -2,13 +2,13 @@
 .PHONY: start-aut stop-aut test-all test-playwright test-cypress test-selenium test-k6
 
 start-aut:
-	docker-compose up -d
+	docker compose up -d
 	@echo "Esperando a que la AUT esté disponible..."
 	@until curl -s http://localhost:3000 > /dev/null; do sleep 2; done
 	@echo "AUT disponible en http://localhost:3000"
 
 stop-aut:
-	docker-compose down
+	docker compose down
 
 test-playwright:
 	cd tests/playwright && npx playwright test
