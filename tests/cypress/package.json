@@ -1,0 +1,19 @@
+{
+  "name": "qa-portfolio-cypress",
+  "version": "1.0.0",
+  "description": "Cypress E2E test suite for QA Portfolio",
+  "scripts": {
+    "test": "cypress run",
+    "test:headed": "cypress run --headed",
+    "open": "cypress open",
+    "report:merge": "mochawesome-merge reports/*.json > reports/merged-report.json",
+    "report:generate": "marge reports/merged-report.json --reportDir reports --inline",
+    "report": "npm run report:merge && npm run report:generate"
+  },
+  "devDependencies": {
+    "cypress": "^13.17.0",
+    "mochawesome": "^7.1.3",
+    "mochawesome-merge": "^4.3.0",
+    "mochawesome-report-generator": "^6.2.0"
+  }
+}

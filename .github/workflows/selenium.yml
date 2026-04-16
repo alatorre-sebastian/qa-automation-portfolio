@@ -1,0 +1,44 @@
+# Workflow: Selenium Tests
+# Ejecuta la suite de pruebas E2E de Selenium contra la cypress-realworld-app
+# Triggers: push y pull_request a la rama main
+# Artefactos: reporte HTML de pytest
+
+name: Selenium Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  selenium-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Levantar AUT con Docker Compose
+        run: docker-compose up -d --wait
+
+      - name: Instalar dependencias Selenium
+        working-directory: tests/selenium
+        run: pip install -r requirements.txt
+
+      - name: Ejecutar Suite Selenium
+        working-directory: tests/selenium
+        run: python -m pytest tests/ --html=reports/report.html --self-contained-html
+
+      - name: Publicar reporte Selenium
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-report
+          path: tests/selenium/reports/
+
+      - name: Detener AUT
+        if: always()
+        run: docker-compose down

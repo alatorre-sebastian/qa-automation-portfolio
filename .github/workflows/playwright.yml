@@ -1,0 +1,51 @@
+# Workflow: Playwright Tests
+# Ejecuta la suite de pruebas E2E de Playwright contra la cypress-realworld-app
+# Triggers: push y pull_request a la rama main
+# Artefactos: reporte HTML de Playwright
+
+name: Playwright Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  playwright-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Levantar AUT con Docker Compose
+        run: docker-compose up -d --wait
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Instalar dependencias Playwright
+        working-directory: tests/playwright
+        run: |
+          npm ci
+          npx playwright install --with-deps
+
+      - name: Ejecutar Suite Playwright
+        working-directory: tests/playwright
+        run: npx playwright test
+
+      - name: Publicar reporte Playwright
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: tests/playwright/playwright-report/
+
+      - name: Detener AUT
+        if: always()
+        run: docker-compose down

@@ -1,0 +1,33 @@
+# Node.js
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+venv/
+
+# Environment variables
+.env
+
+# Playwright reports and artifacts
+tests/playwright/playwright-report/
+tests/playwright/test-results/
+
+# Cypress reports and artifacts
+tests/cypress/reports/
+tests/cypress/videos/
+tests/cypress/screenshots/
+
+# Selenium reports and artifacts
+tests/selenium/reports/
+tests/selenium/screenshots/
+
+# k6 reports
+tests/k6/reports/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store

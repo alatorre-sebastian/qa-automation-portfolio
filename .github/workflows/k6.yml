@@ -1,0 +1,48 @@
+# Workflow: k6 Performance Tests
+# Ejecuta la suite de pruebas de rendimiento k6 contra la API de la cypress-realworld-app
+# Triggers: push y pull_request a la rama main
+# Artefactos: reporte JSON de k6
+
+name: k6 Performance Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  k6-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Instalar k6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D68
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
+
+      - name: Levantar AUT con Docker Compose
+        run: docker-compose up -d --wait
+
+      - name: Ejecutar Suite k6
+        working-directory: tests/k6
+        run: k6 run scripts/load-test.js --summary-export=reports/summary.json
+
+      - name: Publicar reporte k6
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-report
+          path: tests/k6/reports/
+
+      - name: Detener AUT
+        if: always()
+        run: docker-compose down
