@@ -1,10 +1,10 @@
 # docker-compose.yml
-version: '3.8'
 
 services:
   realworld-app:
     build:
-      context: ./apps/cypress-realworld-app
+      context: .
+      dockerfile: Dockerfile.aut
     ports:
       - "3000:3000"
       - "3001:3001"
