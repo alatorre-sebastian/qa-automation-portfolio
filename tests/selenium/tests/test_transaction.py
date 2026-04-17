@@ -76,8 +76,8 @@ class TestTransaction:
         # Verify "Requested" text is visible on the confirmation screen
         assert transaction_page.is_requested_text_visible()
 
-    def test_zero_amount(self, driver, base_url):
-        """A transaction with zero amount should not be allowed."""
+    def test_submit_buttons_disabled_when_form_incomplete(self, driver, base_url):
+        """Submit buttons should be disabled until both amount and description are filled."""
         _login(driver)
 
         transaction_page = TransactionPage(driver)
@@ -87,13 +87,19 @@ class TestTransaction:
         transaction_page.wait_for_user_list()
         transaction_page.select_first_user()
 
-        # Enter zero as the amount
-        transaction_page.fill_amount("0")
-        transaction_page.fill_description("Zero amount test")
-
-        # Pay and Request buttons should be disabled with zero amount
+        # Buttons should start disabled (no amount, no description)
         assert transaction_page.is_pay_button_disabled()
         assert transaction_page.is_request_button_disabled()
+
+        # Fill only the amount — buttons should still be disabled (no description)
+        transaction_page.fill_amount("25")
+        assert transaction_page.is_pay_button_disabled()
+        assert transaction_page.is_request_button_disabled()
+
+        # Fill the description — buttons should now be enabled
+        transaction_page.fill_description("Form validation test")
+        assert transaction_page.is_pay_button_enabled()
+        assert transaction_page.is_request_button_enabled()
 
     def test_empty_description(self, driver, base_url):
         """A transaction without a description should not be allowed."""

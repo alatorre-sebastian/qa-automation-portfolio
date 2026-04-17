@@ -49,7 +49,7 @@ test.describe('Transactions', () => {
     await expect(transactionPage.getReturnToTransactionsButton()).toBeVisible();
   });
 
-  test('should not allow a transaction with zero amount', async ({ page }) => {
+  test('should disable submit buttons when form is incomplete', async ({ page }) => {
     const transactionPage = new TransactionPage(page);
 
     // Navigate to new transaction
@@ -58,13 +58,19 @@ test.describe('Transactions', () => {
     // Select the first user
     await transactionPage.selectFirstUser();
 
-    // Enter zero as the amount
-    await transactionPage.fillAmount('0');
-    await transactionPage.fillDescription('Zero amount test');
-
-    // Pay and Request buttons should be disabled with zero amount
+    // Buttons should start disabled (no amount, no description)
     await expect(transactionPage.getPayButton()).toBeDisabled();
     await expect(transactionPage.getRequestButton()).toBeDisabled();
+
+    // Fill only the amount — buttons should still be disabled (no description)
+    await transactionPage.fillAmount('25');
+    await expect(transactionPage.getPayButton()).toBeDisabled();
+    await expect(transactionPage.getRequestButton()).toBeDisabled();
+
+    // Fill the description — buttons should now be enabled
+    await transactionPage.fillDescription('Form validation test');
+    await expect(transactionPage.getPayButton()).toBeEnabled();
+    await expect(transactionPage.getRequestButton()).toBeEnabled();
   });
 
   test('should not allow a transaction without a description', async ({ page }) => {

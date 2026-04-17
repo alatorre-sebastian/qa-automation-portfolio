@@ -43,20 +43,26 @@ describe('Transactions', () => {
     cy.get('[data-test="new-transaction-return-to-transactions"]').should('be.visible');
   });
 
-  it('should not allow a transaction with zero amount', () => {
+  it('should disable submit buttons when form is incomplete', () => {
     // Navigate to new transaction
     cy.get('[data-test="nav-top-new-transaction"]').click();
 
     // Select the first user
     cy.get('[data-test^="user-list-item-"]').first().should('be.visible').click();
 
-    // Enter zero as the amount
-    cy.get('[data-test="transaction-create-amount-input"] #amount').type('0');
-    cy.get('[data-test="transaction-create-description-input"] input').type('Zero amount test');
-
-    // Pay and Request buttons should be disabled with zero amount
+    // Buttons should start disabled (no amount, no description)
     cy.get('[data-test="transaction-create-submit-payment"]').should('be.disabled');
     cy.get('[data-test="transaction-create-submit-request"]').should('be.disabled');
+
+    // Fill only the amount — buttons should still be disabled (no description)
+    cy.get('[data-test="transaction-create-amount-input"] #amount').type('25');
+    cy.get('[data-test="transaction-create-submit-payment"]').should('be.disabled');
+    cy.get('[data-test="transaction-create-submit-request"]').should('be.disabled');
+
+    // Fill the description — buttons should now be enabled
+    cy.get('[data-test="transaction-create-description-input"] input').type('Form validation test');
+    cy.get('[data-test="transaction-create-submit-payment"]').should('not.be.disabled');
+    cy.get('[data-test="transaction-create-submit-request"]').should('not.be.disabled');
   });
 
   it('should not allow a transaction without a description', () => {

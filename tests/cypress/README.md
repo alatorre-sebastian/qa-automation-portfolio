@@ -8,7 +8,7 @@ End-to-end test suite written in **Cypress** with **JavaScript** that validates 
 |---|---|---|
 | `e2e/login.cy.js` | Login | Successful login, invalid credentials, validation errors, empty credentials |
 | `e2e/signup.cy.js` | Registration | User registration with onboarding, validation errors, duplicate username |
-| `e2e/transaction.cy.js` | Transactions | Create payment, create request, zero amount, empty description, transaction detail |
+| `e2e/transaction.cy.js` | Transactions | Create payment, create request, form validation (incomplete fields), empty description, transaction detail |
 | `e2e/notification.cy.js` | Notifications | View notifications list, navigate via top nav, dismiss notifications |
 
 ## Custom Commands

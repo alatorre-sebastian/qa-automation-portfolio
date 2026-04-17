@@ -84,10 +84,20 @@ class TransactionPage(BasePage):
         element = self.find_element(*self.PAY_BUTTON)
         return not element.is_enabled()
 
+    def is_pay_button_enabled(self) -> bool:
+        """Check if the pay button is enabled."""
+        element = self.find_element(*self.PAY_BUTTON)
+        return element.is_enabled()
+
     def is_request_button_disabled(self) -> bool:
         """Check if the request button is disabled."""
         element = self.find_element(*self.REQUEST_BUTTON)
         return not element.is_enabled()
+
+    def is_request_button_enabled(self) -> bool:
+        """Check if the request button is enabled."""
+        element = self.find_element(*self.REQUEST_BUTTON)
+        return element.is_enabled()
 
     def click_personal_tab(self) -> None:
         """Click the personal transactions tab."""
