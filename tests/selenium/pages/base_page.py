@@ -88,6 +88,7 @@ class BasePage:
         validation.
         """
         self.driver.execute_script(
+            "arguments[0].focus();"
             "var nativeInputValueSetter = Object.getOwnPropertyDescriptor("
             "  window.HTMLInputElement.prototype, 'value').set;"
             "nativeInputValueSetter.call(arguments[0], arguments[1]);"
