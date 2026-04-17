@@ -21,5 +21,6 @@ RUN cp data/database-seed.json data/database.json
 # Expose frontend and API ports
 EXPOSE 3000 3001
 
-# Start the application (frontend + API concurrently)
-CMD ["yarn", "start"]
+# Start Vite on 0.0.0.0 (--host) so it's accessible outside the container,
+# and run the API server concurrently
+CMD ["sh", "-c", "npx concurrently 'vite --host' 'yarn start:api'"]
