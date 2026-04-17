@@ -5,9 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.aut
-    ports:
-      - "3000:3000"
-      - "3001:3001"
+    network_mode: host
     environment:
       - NODE_ENV=development
     healthcheck:
