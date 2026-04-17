@@ -1,16 +1,16 @@
 FROM node:22-bookworm-slim
 
-# Install curl for healthcheck and git for husky/postinstall
+# Install curl for healthcheck and git for husky postinstall
 RUN apt-get update && apt-get install -y --no-install-recommends curl git && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Init a git repo so husky install doesn't fail during postinstall
-RUN git init
-
 # Copy the full application source
 COPY apps/cypress-realworld-app/ .
+
+# Remove submodule .git file and init a fresh repo so husky install works
+RUN rm -f .git && git init
 
 # Install dependencies (postinstall runs husky install + patch-package)
 RUN yarn install --frozen-lockfile || yarn install
