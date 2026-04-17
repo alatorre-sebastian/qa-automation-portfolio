@@ -6,6 +6,6 @@ export const BASE_URL = __ENV.BASE_URL || 'http://localhost:3000';
 
 // Credenciales de prueba (usuario pre-seeded en la AUT)
 export const TEST_USER = {
-  username: 'Katharina_Bernier',
+  username: 'Heath93',
   password: 's3cret',
 };

@@ -40,16 +40,6 @@ jobs:
         if: failure()
         run: docker compose logs --tail=50
 
-      - name: Verificar API manualmente
-        run: |
-          echo "=== GET / ==="
-          curl -v http://localhost:3001/ 2>&1 || true
-          echo ""
-          echo "=== POST /login ==="
-          curl -v -X POST http://localhost:3001/login \
-            -H 'Content-Type: application/json' \
-            -d '{"username":"Katharina_Bernier","password":"s3cret"}' 2>&1 || true
-
       - name: Ejecutar Suite k6
         working-directory: tests/k6
         run: |
