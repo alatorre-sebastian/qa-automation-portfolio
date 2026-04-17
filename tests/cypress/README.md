@@ -6,10 +6,10 @@ End-to-end test suite written in **Cypress** with **JavaScript** that validates 
 
 | File | Flow | Description |
 |---|---|---|
-| `e2e/login.cy.js` | Login | Successful login, invalid credentials |
-| `e2e/signup.cy.js` | Registration | User registration with valid data |
-| `e2e/transaction.cy.js` | Transactions | Creating and viewing transactions |
-| `e2e/notification.cy.js` | Notifications | Viewing user notifications |
+| `e2e/login.cy.js` | Login | Successful login, invalid credentials, validation errors, empty credentials |
+| `e2e/signup.cy.js` | Registration | User registration with onboarding, validation errors, duplicate username |
+| `e2e/transaction.cy.js` | Transactions | Create payment, create request, zero amount, empty description, transaction detail |
+| `e2e/notification.cy.js` | Notifications | View notifications list, navigate via top nav, dismiss notifications |
 
 ## Custom Commands
 

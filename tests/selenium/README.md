@@ -6,10 +6,10 @@ End-to-end test suite written in **Selenium WebDriver** with **Python** and **py
 
 | File | Flow | Description |
 |---|---|---|
-| `tests/test_login.py` | Login | Successful login, invalid credentials |
-| `tests/test_signup.py` | Registration | User registration with valid data |
-| `tests/test_transaction.py` | Transactions | Creating and viewing transactions |
-| `tests/test_notification.py` | Notifications | Viewing user notifications |
+| `tests/test_login.py` | Login | Successful login, invalid credentials, validation errors, empty credentials |
+| `tests/test_signup.py` | Registration | User registration with onboarding, validation errors, duplicate username |
+| `tests/test_transaction.py` | Transactions | Create payment, create request, zero amount, empty description, transaction detail |
+| `tests/test_notification.py` | Notifications | View notifications list, navigate via top nav, dismiss notifications |
 
 ## Design Pattern: Page Object Model
 

@@ -6,10 +6,10 @@ End-to-end test suite written in **Playwright** with **TypeScript** that validat
 
 | File | Flow | Description |
 |---|---|---|
-| `tests/login.spec.ts` | Login | Successful login, invalid credentials |
-| `tests/signup.spec.ts` | Registration | User registration with valid data |
-| `tests/transaction.spec.ts` | Transactions | Creating and viewing transactions |
-| `tests/notification.spec.ts` | Notifications | Viewing user notifications |
+| `tests/login.spec.ts` | Login | Successful login, invalid credentials, validation errors, empty credentials |
+| `tests/signup.spec.ts` | Registration | User registration with onboarding, validation errors, duplicate username |
+| `tests/transaction.spec.ts` | Transactions | Create payment, create request, zero amount, empty description, transaction detail |
+| `tests/notification.spec.ts` | Notifications | View notifications list, navigate via top nav, dismiss notifications |
 
 ## Design Pattern: Page Object Model
 
