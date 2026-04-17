@@ -1,7 +1,7 @@
 # Workflow: k6 Performance Tests
-# Ejecuta la suite de pruebas de rendimiento k6 contra la API de la cypress-realworld-app
-# Triggers: push y pull_request a la rama main
-# Artefactos: reporte JSON de k6
+# Runs the k6 performance test suite against the cypress-realworld-app API
+# Triggers: push and pull_request to main
+# Artifacts: k6 JSON summary report
 
 name: k6 Performance Tests
 
@@ -16,47 +16,47 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repositorio
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           submodules: true
 
-      - name: Instalar k6
+      - name: Install k6
         uses: grafana/setup-k6-action@v1
 
-      - name: Levantar AUT con Docker Compose
+      - name: Start AUT with Docker Compose
         run: docker compose up -d --wait
 
-      - name: Verificar que la AUT está disponible
+      - name: Verify AUT is available
         run: |
-          echo "Esperando frontend (puerto 3000)..."
+          echo "Waiting for frontend (port 3000)..."
           timeout 120 bash -c 'until curl -sf http://localhost:3000 > /dev/null 2>&1; do sleep 5; done'
           echo "Frontend OK"
-          echo "Esperando API (puerto 3001)..."
+          echo "Waiting for API (port 3001)..."
           timeout 120 bash -c 'until curl -sf http://localhost:3001/ > /dev/null 2>&1; do sleep 5; done'
           echo "API OK"
 
-      - name: Logs del contenedor (diagnóstico)
+      - name: Container logs (debug)
         if: failure()
         run: docker compose logs --tail=50
 
-      - name: Ejecutar Suite k6
+      - name: Run k6 suite
         working-directory: tests/k6
         run: |
           mkdir -p reports
           k6 run scripts/load-test.js --summary-export=reports/summary.json
 
-      - name: Publicar reporte k6
+      - name: Upload k6 report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: k6-report
           path: tests/k6/reports/
 
-      - name: Logs del contenedor (diagnóstico)
+      - name: Container logs
         if: always()
         run: docker compose logs --tail=100
 
-      - name: Detener AUT
+      - name: Stop AUT
         if: always()
         run: docker compose down

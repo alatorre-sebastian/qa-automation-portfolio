@@ -1,91 +1,91 @@
-# Suite de Pruebas de Rendimiento — k6
+# Performance Test Suite — k6
 
-Suite de pruebas de rendimiento escrita en **k6** con **JavaScript** que evalúa el comportamiento de la API de la cypress-realworld-app bajo diferentes niveles de carga. Los scripts están organizados de forma modular con configuración compartida.
+Performance test suite written in **k6** with **JavaScript** that evaluates the behavior of the cypress-realworld-app API under different load levels. Scripts are organized modularly with shared configuration.
 
-## Escenarios de Prueba
+## Test Scenarios
 
-### Prueba de Carga (`scripts/load-test.js`)
+### Load Test (`scripts/load-test.js`)
 
-Simula un escenario de carga normal para validar que la API responde dentro de los umbrales aceptables bajo uso típico.
+Simulates a normal load scenario to validate that the API responds within acceptable thresholds under typical usage.
 
-| Fase | Duración | Usuarios Virtuales | Descripción |
+| Phase | Duration | Virtual Users | Description |
 |---|---|---|---|
-| Ramp-up | 1 min | 0 → 20 | Incremento gradual de usuarios |
-| Estado estable | 3 min | 20 | Carga sostenida |
-| Ramp-down | 1 min | 20 → 0 | Reducción gradual |
+| Ramp-up | 1 min | 0 → 20 | Gradual user increase |
+| Steady state | 3 min | 20 | Sustained load |
+| Ramp-down | 1 min | 20 → 0 | Gradual decrease |
 
-**Endpoints ejercitados:**
-- `POST /login` — Autenticación
-- `GET /transactions/public` — Listado público de transacciones
-- `GET /users` — Listado de usuarios
-- `GET /notifications` — Notificaciones del usuario
+**Exercised endpoints:**
+- `POST /login` — Authentication
+- `GET /transactions/public` — Public transaction listing
+- `GET /users` — User listing
+- `GET /notifications` — User notifications
 
-### Prueba de Estrés (`scripts/stress-test.js`)
+### Stress Test (`scripts/stress-test.js`)
 
-Incrementa gradualmente la cantidad de usuarios virtuales para identificar los límites de rendimiento de la AUT.
+Gradually increases virtual users to identify the AUT's performance limits.
 
-| Fase | Duración | Usuarios Virtuales | Descripción |
+| Phase | Duration | Virtual Users | Description |
 |---|---|---|---|
-| Ramp-up nivel 1 | 1 min | 0 → 10 | Carga inicial |
-| Estable nivel 1 | 2 min | 10 | Línea base |
-| Ramp-up nivel 2 | 1 min | 10 → 50 | Escalar a carga media |
-| Estable nivel 2 | 2 min | 50 | Carga media sostenida |
-| Ramp-up nivel 3 | 1 min | 50 → 100 | Escalar a carga alta |
-| Estable nivel 3 | 2 min | 100 | Carga alta sostenida |
-| Ramp-up nivel 4 | 1 min | 100 → 200 | Escalar a carga extrema |
-| Estable nivel 4 | 2 min | 200 | Carga extrema sostenida |
-| Ramp-down | 2 min | 200 → 0 | Reducción gradual |
+| Ramp-up level 1 | 1 min | 0 → 10 | Initial load |
+| Steady level 1 | 2 min | 10 | Baseline |
+| Ramp-up level 2 | 1 min | 10 → 50 | Scale to medium load |
+| Steady level 2 | 2 min | 50 | Sustained medium load |
+| Ramp-up level 3 | 1 min | 50 → 100 | Scale to high load |
+| Steady level 3 | 2 min | 100 | Sustained high load |
+| Ramp-up level 4 | 1 min | 100 → 200 | Scale to extreme load |
+| Steady level 4 | 2 min | 200 | Sustained extreme load |
+| Ramp-down | 2 min | 200 → 0 | Gradual decrease |
 
-**Endpoints ejercitados:**
-- `POST /login` — Autenticación
-- `GET /transactions/public` — Listado público de transacciones
-- `GET /users` — Listado de usuarios
-- `GET /notifications` — Notificaciones del usuario
-- `GET /contacts` — Contactos del usuario
+**Exercised endpoints:**
+- `POST /login` — Authentication
+- `GET /transactions/public` — Public transaction listing
+- `GET /users` — User listing
+- `GET /notifications` — User notifications
+- `GET /contacts` — User contacts
 
-## Umbrales de Rendimiento (Thresholds)
+## Performance Thresholds
 
-### Prueba de Carga
+### Load Test
 
-| Métrica | Umbral | Descripción |
+| Metric | Threshold | Description |
 |---|---|---|
-| `http_req_duration` | p(95) < 500ms | El 95% de las peticiones deben responder en menos de 500ms |
-| `http_req_failed` | rate < 0.05 | La tasa de errores debe ser menor al 5% |
+| `http_req_duration` | p(95) < 2s | 95% of requests must respond in under 2s |
+| `http_req_failed` | rate < 0.05 | Error rate must be below 5% |
 
-### Prueba de Estrés
+### Stress Test
 
-| Métrica | Umbral | Descripción |
+| Metric | Threshold | Description |
 |---|---|---|
-| `http_req_duration` | p(95) < 1000ms | El 95% de las peticiones deben responder en menos de 1s (más permisivo bajo estrés) |
-| `http_req_failed` | rate < 0.10 | La tasa de errores debe ser menor al 10% |
+| `http_req_duration` | p(95) < 3s | 95% of requests must respond in under 3s |
+| `http_req_failed` | rate < 0.10 | Error rate must be below 10% |
 
-Si algún umbral no se cumple, k6 retorna un código de salida no-cero, lo que permite integración directa con pipelines de CI/CD.
+If any threshold is not met, k6 returns a non-zero exit code, enabling direct integration with CI/CD pipelines.
 
-## Configuración
+## Configuration
 
-El archivo `helpers/config.js` exporta la configuración compartida:
+The `helpers/config.js` file exports shared configuration:
 
-- **`API_URL`** — URL base de la API (por defecto `http://localhost:3001`, configurable vía variable de entorno `API_URL`)
-- **`BASE_URL`** — URL base del frontend (por defecto `http://localhost:3000`, configurable vía variable de entorno `BASE_URL`)
-- **`TEST_USER`** — Credenciales del usuario de prueba pre-cargado en la AUT
+- **`API_URL`** — API base URL (defaults to `http://localhost:3001`, configurable via `API_URL` environment variable)
+- **`BASE_URL`** — Frontend base URL (defaults to `http://localhost:3000`, configurable via `BASE_URL` environment variable)
+- **`TEST_USER`** — Credentials for the test user pre-loaded in the AUT
 
-## Estructura del Directorio
+## Directory Structure
 
 ```
 tests/k6/
 ├── README.md
 ├── scripts/
-│   ├── load-test.js      # Escenario de prueba de carga
-│   └── stress-test.js    # Escenario de prueba de estrés
+│   ├── load-test.js      # Load test scenario
+│   └── stress-test.js    # Stress test scenario
 └── helpers/
-    └── config.js         # Configuración compartida (URLs, credenciales)
+    └── config.js         # Shared configuration (URLs, credentials)
 ```
 
-## Requisitos Previos
+## Prerequisites
 
-k6 debe estar instalado en el sistema. Consulta la [documentación oficial de instalación de k6](https://grafana.com/docs/k6/latest/set-up/install-k6/).
+k6 must be installed on your system. See the [official k6 installation docs](https://grafana.com/docs/k6/latest/set-up/install-k6/).
 
-**Instalación rápida:**
+**Quick install:**
 
 ```bash
 # macOS (Homebrew)
@@ -103,36 +103,36 @@ sudo apt-get update && sudo apt-get install k6
 choco install k6
 ```
 
-## Ejecución
+## Running Tests
 
 ```bash
-# Ejecutar prueba de carga
+# Run load test
 k6 run scripts/load-test.js
 
-# Ejecutar prueba de estrés
+# Run stress test
 k6 run scripts/stress-test.js
 
-# Ejecutar con exportación de resumen a JSON
+# Run with JSON summary export
 k6 run scripts/load-test.js --summary-export=reports/summary.json
 
-# Ejecutar con URL de API personalizada
-API_URL=http://mi-servidor:3001 k6 run scripts/load-test.js
+# Run with custom API URL
+API_URL=http://my-server:3001 k6 run scripts/load-test.js
 
-# Ejecutar desde la raíz del proyecto con Makefile
+# Run from project root with Makefile
 make test-k6
 ```
 
-## Reportes
+## Reports
 
-k6 muestra un resumen de métricas en la consola al finalizar la ejecución, incluyendo:
+k6 displays a metrics summary in the console after execution, including:
 
-- **Tiempos de respuesta**: media, mediana, p(90), p(95), máximo
-- **Throughput**: peticiones por segundo
-- **Tasa de errores**: porcentaje de peticiones fallidas
-- **Checks**: porcentaje de validaciones exitosas
-- **Estado de umbrales**: pass/fail para cada threshold definido
+- **Response times**: average, median, p(90), p(95), max
+- **Throughput**: requests per second
+- **Error rate**: percentage of failed requests
+- **Checks**: percentage of successful validations
+- **Threshold status**: pass/fail for each defined threshold
 
-Para exportar el resumen a un archivo JSON:
+To export the summary to a JSON file:
 
 ```bash
 k6 run scripts/load-test.js --summary-export=reports/summary.json

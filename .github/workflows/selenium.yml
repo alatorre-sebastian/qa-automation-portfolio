@@ -1,7 +1,7 @@
 # Workflow: Selenium Tests
-# Ejecuta la suite de pruebas E2E de Selenium contra la cypress-realworld-app
-# Triggers: push y pull_request a la rama main
-# Artefactos: reporte HTML de pytest
+# Runs the Selenium E2E test suite against the cypress-realworld-app
+# Triggers: push and pull_request to main
+# Artifacts: pytest HTML report
 
 name: Selenium Tests
 
@@ -16,46 +16,46 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repositorio
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           submodules: true
 
-      - name: Levantar AUT con Docker Compose
+      - name: Start AUT with Docker Compose
         run: docker compose up -d --wait
 
-      - name: Verificar que la AUT está disponible
+      - name: Verify AUT is available
         run: |
-          echo "Esperando frontend (puerto 3000)..."
+          echo "Waiting for frontend (port 3000)..."
           timeout 120 bash -c 'until curl -sf http://localhost:3000 > /dev/null 2>&1; do sleep 5; done'
           echo "Frontend OK"
-          echo "Esperando API (puerto 3001)..."
+          echo "Waiting for API (port 3001)..."
           timeout 120 bash -c 'until curl -sf http://localhost:3001/ > /dev/null 2>&1; do sleep 5; done'
           echo "API OK"
 
-      - name: Logs del contenedor (diagnóstico)
+      - name: Container logs (debug)
         if: failure()
         run: docker compose logs --tail=50
 
-      - name: Instalar dependencias Selenium
+      - name: Install Selenium dependencies
         working-directory: tests/selenium
         run: pip install -r requirements.txt
 
-      - name: Ejecutar Suite Selenium
+      - name: Run Selenium suite
         working-directory: tests/selenium
         run: python -m pytest tests/ --html=reports/report.html --self-contained-html
 
-      - name: Publicar reporte Selenium
+      - name: Upload Selenium report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: selenium-report
           path: tests/selenium/reports/
 
-      - name: Logs del contenedor (diagnóstico)
+      - name: Container logs
         if: always()
         run: docker compose logs --tail=100
 
-      - name: Detener AUT
+      - name: Stop AUT
         if: always()
         run: docker compose down

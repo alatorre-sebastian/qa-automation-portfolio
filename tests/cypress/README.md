@@ -1,104 +1,104 @@
-# Suite de Pruebas E2E — Cypress (JavaScript)
+# E2E Test Suite — Cypress (JavaScript)
 
-Suite de pruebas end-to-end escrita en **Cypress** con **JavaScript** que valida los flujos principales de la cypress-realworld-app utilizando **Custom Commands** para encapsular acciones reutilizables.
+End-to-end test suite written in **Cypress** with **JavaScript** that validates the main flows of the cypress-realworld-app using **Custom Commands** to encapsulate reusable actions.
 
-## Pruebas Incluidas
+## Tests Included
 
-| Archivo | Flujo | Descripción |
+| File | Flow | Description |
 |---|---|---|
-| `e2e/login.cy.js` | Inicio de sesión | Login exitoso, credenciales inválidas |
-| `e2e/signup.cy.js` | Registro de usuario | Registro con datos válidos |
-| `e2e/transaction.cy.js` | Transacciones | Creación y visualización de transacciones |
-| `e2e/notification.cy.js` | Notificaciones | Visualización de notificaciones del usuario |
+| `e2e/login.cy.js` | Login | Successful login, invalid credentials |
+| `e2e/signup.cy.js` | Registration | User registration with valid data |
+| `e2e/transaction.cy.js` | Transactions | Creating and viewing transactions |
+| `e2e/notification.cy.js` | Notifications | Viewing user notifications |
 
 ## Custom Commands
 
-Los custom commands están definidos en `support/commands.js` y se cargan automáticamente a través de `support/e2e.js`.
+Custom commands are defined in `support/commands.js` and loaded automatically through `support/e2e.js`.
 
 ### `cy.login(username, password)`
 
-Inicia sesión en la AUT a través de la UI:
+Logs into the AUT through the UI:
 
-1. Navega a `/signin`
-2. Completa los campos de usuario y contraseña
-3. Hace clic en el botón de submit
-4. Espera a que la URL cambie y el dashboard sea visible
+1. Navigates to `/signin`
+2. Fills in the username and password fields
+3. Clicks the submit button
+4. Waits for the URL to change and the dashboard to be visible
 
-**Ejemplo de uso:**
+**Usage example:**
 
 ```javascript
-cy.login('Katharina_Bernier', 's3cret');
+cy.login('Heath93', 's3cret');
 ```
 
-## Fixtures (Datos de Prueba)
+## Fixtures (Test Data)
 
-El archivo `fixtures/users.json` contiene las credenciales de los usuarios de prueba pre-cargados en la AUT:
+The `fixtures/users.json` file contains credentials for test users pre-loaded in the AUT:
 
-- `defaultUser` — Usuario principal para la mayoría de los tests
-- `loginUser` — Usuario alternativo para tests de login
+- `defaultUser` — Primary user for most tests
+- `loginUser` — Alternative user for login tests
 
-## Configuración
+## Configuration
 
-El archivo `cypress.config.js` define:
+The `cypress.config.js` file defines:
 
-- **URL base**: `http://localhost:3000` (configurable vía variable de entorno `BASE_URL`)
-- **Timeout de comandos**: 10 segundos
-- **Video**: Habilitado (se graba cada ejecución)
-- **Screenshots**: Captura automática en fallos
-- **Reporter**: Mochawesome (genera reportes HTML y JSON)
-- **Directorio de reportes**: `reports/`
+- **Base URL**: `http://localhost:3000` (configurable via `BASE_URL` environment variable)
+- **Command timeout**: 10 seconds
+- **Video**: Enabled (records each run)
+- **Screenshots**: Automatic capture on failure
+- **Reporter**: Mochawesome (generates HTML and JSON reports)
+- **Reports directory**: `reports/`
 
-## Estructura del Directorio
+## Directory Structure
 
 ```
 tests/cypress/
-├── package.json          # Dependencias del proyecto
-├── cypress.config.js     # Configuración de Cypress
+├── package.json          # Project dependencies
+├── cypress.config.js     # Cypress configuration
 ├── e2e/
-│   ├── login.cy.js       # Tests de inicio de sesión
-│   ├── signup.cy.js      # Tests de registro
-│   ├── transaction.cy.js # Tests de transacciones
-│   └── notification.cy.js# Tests de notificaciones
+│   ├── login.cy.js       # Login tests
+│   ├── signup.cy.js      # Registration tests
+│   ├── transaction.cy.js # Transaction tests
+│   └── notification.cy.js# Notification tests
 ├── support/
 │   ├── commands.js       # Custom commands (cy.login)
-│   └── e2e.js            # Archivo de soporte principal
+│   └── e2e.js            # Main support file
 ├── fixtures/
-│   └── users.json        # Datos de prueba
-├── reports/              # Reportes Mochawesome generados
+│   └── users.json        # Test data
+├── reports/              # Generated Mochawesome reports
 └── cypress/
-    └── videos/           # Videos de ejecución
+    └── videos/           # Execution videos
 ```
 
-## Instalación
+## Installation
 
 ```bash
 cd tests/cypress
 npm install
 ```
 
-## Ejecución
+## Running Tests
 
 ```bash
-# Ejecutar todas las pruebas en modo headless
+# Run all tests in headless mode
 npx cypress run
 
-# Ejecutar un archivo de test específico
+# Run a specific test file
 npx cypress run --spec "e2e/login.cy.js"
 
-# Abrir Cypress en modo interactivo
+# Open Cypress in interactive mode
 npx cypress open
 
-# Ejecutar desde la raíz del proyecto con Makefile
+# Run from project root with Makefile
 make test-cypress
 ```
 
-## Reportes
+## Reports
 
-Tras la ejecución, los reportes Mochawesome se generan en `reports/`:
+After execution, Mochawesome reports are generated in `reports/`:
 
-- `mochawesome.html` — Reporte HTML navegable
-- `mochawesome.json` — Datos del reporte en formato JSON
+- `mochawesome.html` — Browsable HTML report
+- `mochawesome.json` — Report data in JSON format
 
-En caso de fallo, se capturan automáticamente:
-- **Screenshots** del estado del navegador en el momento del fallo
-- **Videos** de la ejecución completa de cada spec
+On failure, the following are captured automatically:
+- **Screenshots** of the browser state at the moment of failure
+- **Videos** of the complete execution of each spec

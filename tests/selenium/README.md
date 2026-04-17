@@ -1,107 +1,107 @@
-# Suite de Pruebas E2E — Selenium (Python)
+# E2E Test Suite — Selenium (Python)
 
-Suite de pruebas end-to-end escrita en **Selenium WebDriver** con **Python** y **pytest** que valida los flujos principales de la cypress-realworld-app utilizando el patrón **Page Object Model (POM)**.
+End-to-end test suite written in **Selenium WebDriver** with **Python** and **pytest** that validates the main flows of the cypress-realworld-app using the **Page Object Model (POM)** pattern.
 
-## Pruebas Incluidas
+## Tests Included
 
-| Archivo | Flujo | Descripción |
+| File | Flow | Description |
 |---|---|---|
-| `tests/test_login.py` | Inicio de sesión | Login exitoso, credenciales inválidas |
-| `tests/test_signup.py` | Registro de usuario | Registro con datos válidos |
-| `tests/test_transaction.py` | Transacciones | Creación y visualización de transacciones |
-| `tests/test_notification.py` | Notificaciones | Visualización de notificaciones del usuario |
+| `tests/test_login.py` | Login | Successful login, invalid credentials |
+| `tests/test_signup.py` | Registration | User registration with valid data |
+| `tests/test_transaction.py` | Transactions | Creating and viewing transactions |
+| `tests/test_notification.py` | Notifications | Viewing user notifications |
 
-## Patrón de Diseño: Page Object Model
+## Design Pattern: Page Object Model
 
-Cada página de la AUT está encapsulada en una clase dentro del directorio `pages/`. Todas las clases heredan de `BasePage`, que proporciona métodos comunes para navegación, búsqueda de elementos y capturas de pantalla.
+Each page of the AUT is encapsulated in a class inside the `pages/` directory. All classes inherit from `BasePage`, which provides common methods for navigation, element lookup, and screenshots.
 
-**Page Objects disponibles:**
+**Available Page Objects:**
 
-- `BasePage` — Clase base con métodos: `navigate()`, `find_element()`, `take_screenshot()` y esperas explícitas con `WebDriverWait`
-- `LoginPage` — Hereda de `BasePage`. Encapsula el formulario de login
-- `SignUpPage` — Hereda de `BasePage`. Encapsula el formulario de registro
-- `TransactionPage` — Hereda de `BasePage`. Encapsula la creación y visualización de transacciones
-- `NotificationPage` — Hereda de `BasePage`. Encapsula la visualización de notificaciones
+- `BasePage` — Base class with methods: `navigate()`, `find_element()`, `take_screenshot()` and explicit waits with `WebDriverWait`
+- `LoginPage` — Inherits from `BasePage`. Encapsulates the login form
+- `SignUpPage` — Inherits from `BasePage`. Encapsulates the registration form
+- `TransactionPage` — Inherits from `BasePage`. Encapsulates transaction creation and viewing
+- `NotificationPage` — Inherits from `BasePage`. Encapsulates notification viewing
 
-## Configuración
+## Configuration
 
 ### `conftest.py`
 
-Define los fixtures de pytest:
+Defines pytest fixtures:
 
-- **`driver`** — Inicializa Chrome WebDriver en modo headless usando `webdriver-manager` para gestión automática del driver. Configura ventana de 1920x1080 y espera implícita de 10 segundos.
-- **`base_url`** — Retorna la URL base de la AUT desde la variable de entorno `BASE_URL` (por defecto `http://localhost:3000`).
-- **Hook `pytest_runtest_makereport`** — Captura automática de screenshots en caso de fallo.
+- **`driver`** — Initializes Chrome WebDriver in headless mode using `webdriver-manager` for automatic driver management. Configures 1920x1080 window and 10-second implicit wait.
+- **`base_url`** — Returns the AUT base URL from the `BASE_URL` environment variable (defaults to `http://localhost:3000`).
+- **`pytest_runtest_makereport` hook** — Automatic screenshot capture on failure.
 
 ### `pytest.ini`
 
-- **Directorio de tests**: `tests/`
-- **Opciones por defecto**: Genera reporte HTML autocontenido en `reports/report.html`
+- **Test directory**: `tests/`
+- **Default options**: Generates self-contained HTML report at `reports/report.html`
 - **Markers**: `smoke`, `login`, `signup`, `transaction`, `notification`
 
-## Estructura del Directorio
+## Directory Structure
 
 ```
 tests/selenium/
-├── requirements.txt          # Dependencias Python
-├── conftest.py               # Fixtures y configuración de pytest
-├── pytest.ini                # Configuración de pytest
+├── requirements.txt          # Python dependencies
+├── conftest.py               # Fixtures and pytest configuration
+├── pytest.ini                # pytest configuration
 ├── pages/
 │   ├── __init__.py
-│   ├── base_page.py          # Page Object base
+│   ├── base_page.py          # Base Page Object
 │   ├── login_page.py         # Page Object - Login
-│   ├── signup_page.py        # Page Object - Registro
-│   ├── transaction_page.py   # Page Object - Transacciones
-│   └── notification_page.py  # Page Object - Notificaciones
+│   ├── signup_page.py        # Page Object - Registration
+│   ├── transaction_page.py   # Page Object - Transactions
+│   └── notification_page.py  # Page Object - Notifications
 ├── tests/
 │   ├── __init__.py
-│   ├── test_login.py         # Tests de inicio de sesión
-│   ├── test_signup.py        # Tests de registro
-│   ├── test_transaction.py   # Tests de transacciones
-│   └── test_notification.py  # Tests de notificaciones
+│   ├── test_login.py         # Login tests
+│   ├── test_signup.py        # Registration tests
+│   ├── test_transaction.py   # Transaction tests
+│   └── test_notification.py  # Notification tests
 ├── reports/
-│   └── report.html           # Reporte HTML generado por pytest-html
-└── screenshots/              # Capturas de pantalla en fallos
+│   └── report.html           # HTML report generated by pytest-html
+└── screenshots/              # Failure screenshots
 ```
 
-## Instalación
+## Installation
 
 ```bash
 cd tests/selenium
 pip install -r requirements.txt
 ```
 
-### Dependencias
+### Dependencies
 
-| Paquete | Versión | Descripción |
+| Package | Version | Description |
 |---|---|---|
-| `selenium` | 4.27.1 | WebDriver para automatización de navegadores |
-| `pytest` | 8.3.4 | Framework de testing |
-| `pytest-html` | 4.1.1 | Plugin para generar reportes HTML |
-| `webdriver-manager` | 4.0.2 | Gestión automática de drivers de navegador |
+| `selenium` | 4.27.1 | WebDriver for browser automation |
+| `pytest` | 8.3.4 | Testing framework |
+| `pytest-html` | 4.1.1 | Plugin for HTML report generation |
+| `webdriver-manager` | 4.0.2 | Automatic browser driver management |
 
-## Ejecución
+## Running Tests
 
 ```bash
-# Ejecutar todas las pruebas con reporte HTML
+# Run all tests with HTML report
 python -m pytest tests/ --html=reports/report.html --self-contained-html
 
-# Ejecutar un archivo de test específico
+# Run a specific test file
 python -m pytest tests/test_login.py --html=reports/report.html --self-contained-html
 
-# Ejecutar tests por marker
+# Run tests by marker
 python -m pytest -m login
 
-# Ejecutar con salida detallada
+# Run with verbose output
 python -m pytest tests/ -v --html=reports/report.html --self-contained-html
 
-# Ejecutar desde la raíz del proyecto con Makefile
+# Run from project root with Makefile
 make test-selenium
 ```
 
-## Reportes
+## Reports
 
-Tras la ejecución, el reporte HTML se genera en `reports/report.html`. Es un archivo autocontenido que se puede abrir directamente en el navegador.
+After execution, the HTML report is generated at `reports/report.html`. It's a self-contained file that can be opened directly in the browser.
 
-En caso de fallo, se capturan automáticamente:
-- **Screenshots** del estado del navegador, guardados en `screenshots/` con el nombre del test como identificador
+On failure, the following are captured automatically:
+- **Screenshots** of the browser state, saved in `screenshots/` with the test name as identifier

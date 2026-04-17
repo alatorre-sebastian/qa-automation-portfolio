@@ -7,7 +7,7 @@
 ![GitHub Actions](https://img.shields.io/badge/-GitHub%20Actions-%232088FF?style=for-the-badge&logo=github-actions&logoColor=white)
 ![Docker](https://img.shields.io/badge/-Docker-%232496ED?style=for-the-badge&logo=docker&logoColor=white)
 
-Portafolio de QA Automation Engineer que demuestra competencia en **4 frameworks de testing** ejecutándose contra una misma aplicación real. Cada suite tiene su propio pipeline de CI/CD independiente en GitHub Actions.
+QA Automation Engineer portfolio demonstrating proficiency across **4 testing frameworks** running against the same real-world application. Each suite has its own independent CI/CD pipeline in GitHub Actions.
 
 [![Playwright Tests](https://github.com/alatorre-sebastian/qa-automation-portfolio/actions/workflows/playwright.yml/badge.svg)](https://github.com/alatorre-sebastian/qa-automation-portfolio/actions/workflows/playwright.yml)
 [![Cypress Tests](https://github.com/alatorre-sebastian/qa-automation-portfolio/actions/workflows/cypress.yml/badge.svg)](https://github.com/alatorre-sebastian/qa-automation-portfolio/actions/workflows/cypress.yml)
@@ -16,27 +16,27 @@ Portafolio de QA Automation Engineer que demuestra competencia en **4 frameworks
 
 ---
 
-## Qué demuestra este proyecto
+## What This Project Demonstrates
 
-| Competencia | Cómo se demuestra |
+| Skill | How It's Demonstrated |
 |---|---|
-| **Multi-framework** | 4 suites independientes: Playwright, Cypress, Selenium, k6 |
-| **Multi-lenguaje** | TypeScript, JavaScript, Python |
-| **Patrones de diseño** | Page Object Model (Playwright, Selenium), Custom Commands (Cypress) |
-| **Performance testing** | Pruebas de carga y estrés con k6 contra la API REST |
-| **CI/CD** | 4 pipelines independientes en GitHub Actions con artefactos |
-| **Infraestructura** | Docker Compose para la AUT, Makefile como interfaz unificada |
-| **Documentación** | README por framework, reportes HTML, estructura clara |
+| **Multi-framework** | 4 independent suites: Playwright, Cypress, Selenium, k6 |
+| **Multi-language** | TypeScript, JavaScript, Python |
+| **Design patterns** | Page Object Model (Playwright, Selenium), Custom Commands (Cypress) |
+| **Performance testing** | Load and stress tests with k6 against the REST API |
+| **CI/CD** | 4 independent GitHub Actions pipelines with artifacts |
+| **Infrastructure** | Docker Compose for the AUT, Makefile as unified interface |
+| **Documentation** | Per-framework README, HTML reports, clear structure |
 
 ---
 
-## Suites de Pruebas
+## Test Suites
 
-Todas las suites se ejecutan contra la [cypress-realworld-app](https://github.com/cypress-io/cypress-realworld-app), una aplicación financiera tipo Venmo con autenticación, transacciones, notificaciones y perfiles de usuario.
+All suites run against the [cypress-realworld-app](https://github.com/cypress-io/cypress-realworld-app), a Venmo-like financial application with authentication, transactions, notifications, and user profiles.
 
 ### 🎭 Playwright — TypeScript E2E
 
-**Patrón**: Page Object Model | **Navegadores**: Chromium, Firefox
+**Pattern**: Page Object Model | **Browsers**: Chromium, Firefox
 
 ```
 tests/playwright/
@@ -45,93 +45,93 @@ tests/playwright/
 └── playwright.config.ts
 ```
 
-**Tests**: Login exitoso/fallido · Registro de usuario · Creación de transacciones · Notificaciones
-**Reporte**: HTML interactivo con screenshots en fallos y traces para debugging
+**Tests**: Successful/failed login · User registration · Transaction creation · Notifications
+**Reports**: Interactive HTML with failure screenshots and traces for debugging
 
-📂 [Ver código](tests/playwright/) · 📄 [Ver README](tests/playwright/README.md)
+📂 [View code](tests/playwright/) · 📄 [View README](tests/playwright/README.md)
 
 ---
 
 ### 🌲 Cypress — JavaScript E2E
 
-**Patrón**: Custom Commands | **Reporter**: Mochawesome
+**Pattern**: Custom Commands | **Reporter**: Mochawesome
 
 ```
 tests/cypress/
 ├── e2e/            → login, signup, transaction, notification specs
 ├── support/        → cy.login() custom command
-├── fixtures/       → datos de prueba (users.json)
+├── fixtures/       → test data (users.json)
 └── cypress.config.js
 ```
 
-**Tests**: Login con custom command · Registro · Transacciones · Notificaciones
-**Reporte**: Mochawesome HTML/JSON con video de cada ejecución
+**Tests**: Login with custom command · Registration · Transactions · Notifications
+**Reports**: Mochawesome HTML/JSON with video recording of each run
 
-📂 [Ver código](tests/cypress/) · 📄 [Ver README](tests/cypress/README.md)
+📂 [View code](tests/cypress/) · 📄 [View README](tests/cypress/README.md)
 
 ---
 
 ### 🔬 Selenium — Python E2E
 
-**Patrón**: Page Object Model + pytest | **Driver**: Chrome headless (webdriver-manager)
+**Pattern**: Page Object Model + pytest | **Driver**: Headless Chrome (webdriver-manager)
 
 ```
 tests/selenium/
 ├── pages/          → BasePage, LoginPage, SignUpPage, TransactionPage, NotificationPage
 ├── tests/          → test_login, test_signup, test_transaction, test_notification
-└── conftest.py     → fixtures + screenshot automático en fallos
+└── conftest.py     → fixtures + automatic screenshot on failure
 ```
 
-**Tests**: Login con validaciones · Registro · Transacciones · Notificaciones
-**Reporte**: pytest-html autocontenido con screenshots en fallos
+**Tests**: Login with validations · Registration · Transactions · Notifications
+**Reports**: Self-contained pytest-html with failure screenshots
 
-📂 [Ver código](tests/selenium/) · 📄 [Ver README](tests/selenium/README.md)
+📂 [View code](tests/selenium/) · 📄 [View README](tests/selenium/README.md)
 
 ---
 
 ### ⚡ k6 — Performance Testing
 
-**Tipo**: Carga y Estrés contra la API REST
+**Type**: Load & Stress testing against the REST API
 
 ```
 tests/k6/
-├── scripts/        → load-test.js (20 VUs), stress-test.js (hasta 200 VUs)
-└── helpers/        → config.js (URLs, credenciales)
+├── scripts/        → load-test.js (20 VUs), stress-test.js (up to 200 VUs)
+└── helpers/        → config.js (URLs, credentials)
 ```
 
-| Escenario | Usuarios Virtuales | Duración | Thresholds |
+| Scenario | Virtual Users | Duration | Thresholds |
 |---|---|---|---|
-| **Carga** | Ramp-up a 20 VUs | ~5 min | p(95) < 2s, errores < 5% |
-| **Estrés** | 10 → 50 → 100 → 200 VUs | ~14 min | p(95) < 3s, errores < 10% |
+| **Load** | Ramp-up to 20 VUs | ~5 min | p(95) < 2s, errors < 5% |
+| **Stress** | 10 → 50 → 100 → 200 VUs | ~14 min | p(95) < 3s, errors < 10% |
 
 **Endpoints**: POST /login · GET /transactions/public · GET /users · GET /notifications
 
-📂 [Ver código](tests/k6/) · 📄 [Ver README](tests/k6/README.md)
+📂 [View code](tests/k6/) · 📄 [View README](tests/k6/README.md)
 
 ---
 
 ## CI/CD
 
-Cada framework tiene su propio workflow de GitHub Actions. Se ejecutan en paralelo en cada push/PR a `main`.
+Each framework has its own GitHub Actions workflow. They run in parallel on every push/PR to `main`.
 
 ```
 .github/workflows/
-├── playwright.yml    → Build Docker → Playwright tests → Publicar reporte HTML
-├── cypress.yml       → Build Docker → Cypress tests    → Publicar reporte Mochawesome
-├── selenium.yml      → Build Docker → Selenium tests   → Publicar reporte pytest-html
-└── k6.yml            → Build Docker → k6 load test     → Publicar resumen JSON
+├── playwright.yml    → Build Docker → Playwright tests → Publish HTML report
+├── cypress.yml       → Build Docker → Cypress tests    → Publish Mochawesome report
+├── selenium.yml      → Build Docker → Selenium tests   → Publish pytest-html report
+└── k6.yml            → Build Docker → k6 load test     → Publish JSON summary
 ```
 
-Cada workflow:
-1. Clona el repo con el submódulo de la AUT
-2. Construye y levanta la app con Docker Compose
-3. Ejecuta la suite de pruebas
-4. Publica los reportes como artefactos (descargables desde la pestaña Actions)
-5. Destruye el contenedor
+Each workflow:
+1. Clones the repo with the AUT submodule
+2. Builds and starts the app with Docker Compose
+3. Runs the test suite
+4. Publishes reports as downloadable artifacts (from the Actions tab)
+5. Tears down the container
 
 ---
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 qa-automation-portfolio/
@@ -142,21 +142,21 @@ qa-automation-portfolio/
 │   ├── cypress/                  # JavaScript E2E
 │   ├── selenium/                 # Python E2E
 │   └── k6/                       # Performance
-├── .github/workflows/            # 4 pipelines CI/CD
-├── docker-compose.yml            # Orquestación de la AUT
-├── Dockerfile.aut                # Imagen Docker de la AUT
-├── Makefile                      # Interfaz unificada
-└── .env.example                  # Variables de entorno
+├── .github/workflows/            # 4 CI/CD pipelines
+├── docker-compose.yml            # AUT orchestration
+├── Dockerfile.aut                # AUT Docker image
+├── Makefile                      # Unified interface
+└── .env.example                  # Environment variables
 ```
 
 ---
 
-## Ejecución Local
+## Running Locally
 
 <details>
-<summary><strong>Requisitos previos</strong></summary>
+<summary><strong>Prerequisites</strong></summary>
 
-| Herramienta | Verificar |
+| Tool | Verify |
 |---|---|
 | Git | `git --version` |
 | Docker + Docker Compose | `docker compose version` |
@@ -167,17 +167,17 @@ qa-automation-portfolio/
 </details>
 
 <details>
-<summary><strong>Instalación</strong></summary>
+<summary><strong>Installation</strong></summary>
 
 ```bash
-# Clonar con submódulos
+# Clone with submodules
 git clone --recurse-submodules https://github.com/alatorre-sebastian/qa-automation-portfolio.git
 cd qa-automation-portfolio
 
-# Si ya clonaste sin submódulos
+# If you already cloned without submodules
 git submodule update --init --recursive
 
-# Instalar dependencias por framework
+# Install dependencies per framework
 cd tests/playwright && npm install && npx playwright install --with-deps && cd ../..
 cd tests/cypress && npm install && cd ../..
 cd tests/selenium && pip install -r requirements.txt && cd ../..
@@ -186,22 +186,22 @@ cd tests/selenium && pip install -r requirements.txt && cd ../..
 </details>
 
 <details>
-<summary><strong>Ejecutar tests</strong></summary>
+<summary><strong>Running tests</strong></summary>
 
 ```bash
-# Levantar la app
+# Start the app
 make start-aut
 
-# Ejecutar todas las suites
+# Run all suites
 make test-all
 
-# O ejecutar una suite individual
+# Or run a single suite
 make test-playwright
 make test-cypress
 make test-selenium
 make test-k6
 
-# Detener la app
+# Stop the app
 make stop-aut
 ```
 
@@ -209,14 +209,14 @@ make stop-aut
 
 ---
 
-## Tecnologías
+## Tech Stack
 
-| Categoría | Tecnologías |
+| Category | Technologies |
 |---|---|
 | **E2E Testing** | Playwright, Cypress, Selenium WebDriver |
 | **Performance** | k6 (Grafana) |
-| **Lenguajes** | TypeScript, JavaScript, Python |
+| **Languages** | TypeScript, JavaScript, Python |
 | **Test Runners** | Playwright Test, Cypress, pytest |
-| **CI/CD** | GitHub Actions (4 workflows independientes) |
-| **Infraestructura** | Docker Compose, Makefile |
-| **Reportes** | Playwright HTML, Mochawesome, pytest-html, k6 JSON |
+| **CI/CD** | GitHub Actions (4 independent workflows) |
+| **Infrastructure** | Docker Compose, Makefile |
+| **Reports** | Playwright HTML, Mochawesome, pytest-html, k6 JSON |

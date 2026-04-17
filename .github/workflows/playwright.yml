@@ -1,7 +1,7 @@
 # Workflow: Playwright Tests
-# Ejecuta la suite de pruebas E2E de Playwright contra la cypress-realworld-app
-# Triggers: push y pull_request a la rama main
-# Artefactos: reporte HTML de Playwright
+# Runs the Playwright E2E test suite against the cypress-realworld-app
+# Triggers: push and pull_request to main
+# Artifacts: Playwright HTML report
 
 name: Playwright Tests
 
@@ -16,53 +16,53 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repositorio
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           submodules: true
 
-      - name: Levantar AUT con Docker Compose
+      - name: Start AUT with Docker Compose
         run: docker compose up -d --wait
 
-      - name: Verificar que la AUT está disponible
+      - name: Verify AUT is available
         run: |
-          echo "Esperando frontend (puerto 3000)..."
+          echo "Waiting for frontend (port 3000)..."
           timeout 120 bash -c 'until curl -sf http://localhost:3000 > /dev/null 2>&1; do sleep 5; done'
           echo "Frontend OK"
-          echo "Esperando API (puerto 3001)..."
+          echo "Waiting for API (port 3001)..."
           timeout 120 bash -c 'until curl -sf http://localhost:3001/ > /dev/null 2>&1; do sleep 5; done'
           echo "API OK"
 
-      - name: Logs del contenedor (diagnóstico)
+      - name: Container logs (debug)
         if: failure()
         run: docker compose logs --tail=50
 
-      - name: Configurar Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Instalar dependencias Playwright
+      - name: Install Playwright dependencies
         working-directory: tests/playwright
         run: |
           npm ci
           npx playwright install --with-deps
 
-      - name: Ejecutar Suite Playwright
+      - name: Run Playwright suite
         working-directory: tests/playwright
         run: npx playwright test
 
-      - name: Publicar reporte Playwright
+      - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
           path: tests/playwright/playwright-report/
 
-      - name: Logs del contenedor (diagnóstico)
+      - name: Container logs
         if: always()
         run: docker compose logs --tail=100
 
-      - name: Detener AUT
+      - name: Stop AUT
         if: always()
         run: docker compose down
