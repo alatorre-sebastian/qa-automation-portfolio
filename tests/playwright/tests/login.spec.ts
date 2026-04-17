@@ -11,8 +11,8 @@ test.describe('Login', () => {
   test('should allow a user to login', async ({ page }) => {
     await login(page, TEST_USER.username, TEST_USER.password);
 
-    // Verify the user is on the home page and the sidenav shows the username
-    await expect(page.locator('[data-test="sidenav-username"]')).toContainText(TEST_USER.username, { timeout: 10000 });
+    const loginPage = new LoginPage(page);
+    await expect(loginPage.getSidenavUsername()).toContainText(TEST_USER.username, { timeout: 10000 });
   });
 
   test('should display error for invalid credentials', async ({ page }) => {
@@ -27,26 +27,34 @@ test.describe('Login', () => {
   });
 
   test('should show validation errors', async ({ page }) => {
-    await page.goto('/signin');
+    const loginPage = new LoginPage(page);
+    await loginPage.navigate();
 
     // Type and clear username to trigger validation
-    const usernameInput = page.locator('[data-test="signin-username"] input');
-    await usernameInput.fill('User');
-    await usernameInput.fill('');
-    await usernameInput.blur();
-    await expect(page.locator('#username-helper-text')).toBeVisible();
-    await expect(page.locator('#username-helper-text')).toContainText('Username is required');
+    await loginPage.fillUsername('User');
+    await loginPage.clearUsernameAndBlur();
+    await expect(loginPage.getUsernameHelperText()).toBeVisible();
+    await expect(loginPage.getUsernameHelperText()).toContainText('Username is required');
 
     // Type short password to trigger validation
-    const passwordInput = page.locator('[data-test="signin-password"] input');
-    await passwordInput.fill('abc');
-    await passwordInput.blur();
-    await expect(page.locator('#password-helper-text')).toBeVisible();
-    await expect(page.locator('#password-helper-text')).toContainText(
+    await loginPage.fillPasswordAndBlur('abc');
+    await expect(loginPage.getPasswordHelperText()).toBeVisible();
+    await expect(loginPage.getPasswordHelperText()).toContainText(
       'Password must contain at least 4 characters'
     );
 
     // Verify submit button is disabled
-    await expect(page.locator('[data-test="signin-submit"]')).toBeDisabled();
+    await expect(loginPage.getSubmitButton()).toBeDisabled();
+  });
+
+  test('should keep user on signin page with empty credentials', async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.navigate();
+
+    // Click submit without filling any fields
+    await loginPage.submit();
+
+    // User should remain on the signin page
+    await expect(page).toHaveURL(/\/signin/);
   });
 });

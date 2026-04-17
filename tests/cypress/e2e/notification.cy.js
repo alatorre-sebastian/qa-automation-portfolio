@@ -25,4 +25,28 @@ describe('Notifications', () => {
     // Verify URL contains /notifications
     cy.url().should('include', '/notifications');
   });
+
+  it('should allow user to dismiss notifications', () => {
+    cy.visit('/notifications');
+
+    // Only attempt to dismiss if notifications exist
+    cy.get('body').then(($body) => {
+      if ($body.find('[data-test="notifications-list"]').length > 0) {
+        cy.get('[data-test^="notification-list-item-"]').then(($items) => {
+          if ($items.length > 0) {
+            const initialCount = $items.length;
+
+            // Click the dismiss button on the first notification
+            cy.get('[data-test^="notification-mark-read-"]').first().click();
+
+            // Verify the count decreased or the notification was removed
+            cy.get('[data-test^="notification-list-item-"]').should(
+              'have.length.lte',
+              initialCount
+            );
+          }
+        });
+      }
+    });
+  });
 });

@@ -7,12 +7,12 @@ Validates: Requirements 5.2
 import time
 
 import pytest
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.signup_page import SignUpPage
 from pages.login_page import LoginPage
+from pages.onboarding_page import OnboardingPage
 
 
 @pytest.mark.signup
@@ -47,76 +47,77 @@ class TestSignUp:
         WebDriverWait(driver, 30).until_not(EC.url_contains("/signin"))
 
         # Wait for sidenav username to confirm we are logged in
-        WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located(
-                (By.CSS_SELECTOR, '[data-test="sidenav-username"]')
-            )
-        )
+        assert login_page.is_sidenav_username_visible()
 
         # Onboarding dialog appears for new users
-        WebDriverWait(driver, 15).until(
-            EC.visibility_of_element_located(
-                (By.CSS_SELECTOR, '[data-test="user-onboarding-dialog"]')
-            )
-        )
+        onboarding_page = OnboardingPage(driver)
+        assert onboarding_page.is_dialog_visible()
 
         # Step 1: Click Next
-        next_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable(
-                (By.CSS_SELECTOR, '[data-test="user-onboarding-next"]')
-            )
-        )
-        next_button.click()
+        onboarding_page.click_next()
 
         # Step 2: Fill bank account form
-        WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located(
-                (By.CSS_SELECTOR, '[data-test="user-onboarding-dialog-title"]')
-            )
-        )
-
-        bank_name_input = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, '[data-test="bankaccount-bankName-input"] input')
-            )
-        )
-        bank_name_input.clear()
-        bank_name_input.send_keys("The Best Bank")
-
-        account_number_input = driver.find_element(
-            By.CSS_SELECTOR, '[data-test="bankaccount-accountNumber-input"] input'
-        )
-        account_number_input.clear()
-        account_number_input.send_keys("123456789")
-
-        routing_number_input = driver.find_element(
-            By.CSS_SELECTOR, '[data-test="bankaccount-routingNumber-input"] input'
-        )
-        routing_number_input.clear()
-        routing_number_input.send_keys("987654321")
-
-        submit_bank = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable(
-                (By.CSS_SELECTOR, '[data-test="bankaccount-submit"]')
-            )
-        )
-        submit_bank.click()
+        onboarding_page.fill_bank_name("The Best Bank")
+        onboarding_page.fill_account_number("123456789")
+        onboarding_page.fill_routing_number("987654321")
+        onboarding_page.submit_bank_account()
 
         # Step 3: Finished — click Done
-        done_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable(
-                (By.CSS_SELECTOR, '[data-test="user-onboarding-next"]')
-            )
-        )
-        done_button.click()
+        onboarding_page.click_next()
 
         # Verify transaction list is visible after onboarding
-        WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located(
-                (By.CSS_SELECTOR, '[data-test="transaction-list"]')
-            )
-        )
-        transaction_list = driver.find_element(
-            By.CSS_SELECTOR, '[data-test="transaction-list"]'
-        )
-        assert transaction_list.is_displayed()
+        assert onboarding_page.is_transaction_list_visible()
+
+    def test_show_validation_errors_on_signup(self, driver, base_url):
+        """Validation errors should appear for empty fields and password mismatch."""
+        signup_page = SignUpPage(driver)
+        signup_page.navigate()
+
+        # Fill and clear first name to trigger validation
+        signup_page.fill_first_name("First")
+        signup_page.clear_first_name_and_blur()
+        assert signup_page.is_first_name_helper_visible()
+        assert "First Name is required" in signup_page.get_first_name_helper_text()
+
+        # Fill and clear last name
+        signup_page.fill_last_name("Last")
+        signup_page.clear_last_name_and_blur()
+        assert signup_page.is_last_name_helper_visible()
+        assert "Last Name is required" in signup_page.get_last_name_helper_text()
+
+        # Fill and clear username
+        signup_page.fill_username("User")
+        signup_page.clear_username_and_blur()
+        assert signup_page.is_username_helper_visible()
+        assert "Username is required" in signup_page.get_username_helper_text()
+
+        # Fill and clear password
+        signup_page.fill_password("password")
+        signup_page.clear_password_and_blur()
+        assert signup_page.is_password_helper_visible()
+        assert "Enter your password" in signup_page.get_password_helper_text()
+
+        # Fill confirm password with mismatch
+        signup_page.fill_password("password")
+        signup_page.fill_confirm_password_and_blur("DIFFERENT PASSWORD")
+        assert signup_page.is_confirm_password_helper_visible()
+        assert "Password does not match" in signup_page.get_confirm_password_helper_text()
+
+        # Submit button should be disabled
+        assert signup_page.is_submit_disabled()
+
+    def test_duplicate_username(self, driver, base_url):
+        """Signing up with an existing username should keep user on signup page."""
+        signup_page = SignUpPage(driver)
+        signup_page.navigate()
+
+        # Try to register with an existing username
+        signup_page.fill_first_name("Duplicate")
+        signup_page.fill_last_name("User")
+        signup_page.fill_username("Heath93")
+        signup_page.fill_password("s3cret")
+        signup_page.fill_confirm_password("s3cret")
+        signup_page.submit()
+
+        # User should remain on the signup page (not redirected to signin)
+        assert "/signup" in driver.current_url

@@ -45,4 +45,14 @@ describe('Login', () => {
     // Submit button should be disabled
     cy.get('[data-test="signin-submit"]').should('be.disabled');
   });
+
+  it('should keep user on signin page with empty credentials', () => {
+    cy.visit('/signin');
+
+    // Click submit without filling any fields
+    cy.get('[data-test="signin-submit"]').click({ force: true });
+
+    // User should remain on the signin page
+    cy.url().should('include', '/signin');
+  });
 });

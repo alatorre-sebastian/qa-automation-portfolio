@@ -17,6 +17,7 @@ tests/playwright/test-results/
 # Cypress reports and artifacts
 tests/cypress/reports/
 tests/cypress/videos/
+tests/cypress/cypress/videos/
 tests/cypress/screenshots/
 
 # Selenium reports and artifacts

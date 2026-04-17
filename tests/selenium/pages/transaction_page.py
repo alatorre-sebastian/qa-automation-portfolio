@@ -6,6 +6,7 @@ Uses the same data-test attribute selectors as the Playwright page objects.
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
 
 from pages.base_page import BasePage
 
@@ -22,6 +23,10 @@ class TransactionPage(BasePage):
     REQUEST_BUTTON = (By.CSS_SELECTOR, '[data-test="transaction-create-submit-request"]')
     RETURN_TO_TRANSACTIONS_BUTTON = (By.CSS_SELECTOR, '[data-test="new-transaction-return-to-transactions"]')
     USER_LIST_ITEMS = (By.CSS_SELECTOR, '[data-test^="user-list-item-"]')
+    PERSONAL_TAB = (By.CSS_SELECTOR, '[data-test="nav-personal-tab"]')
+    TRANSACTION_LIST = (By.CSS_SELECTOR, '[data-test="transaction-list"]')
+    PAID_TEXT = (By.XPATH, "//*[contains(text(), 'Paid')]")
+    REQUESTED_TEXT = (By.XPATH, "//*[contains(text(), 'Requested')]")
 
     def __init__(self, driver: WebDriver):
         super().__init__(driver)
@@ -38,6 +43,10 @@ class TransactionPage(BasePage):
         """Click the first user in the user list."""
         self.click(*self.USER_LIST_ITEMS)
 
+    def wait_for_user_list(self) -> None:
+        """Wait for the user list items to be visible."""
+        self.is_visible(*self.USER_LIST_ITEMS)
+
     def fill_amount(self, amount: str) -> None:
         """Type an amount into the amount input field."""
         self.type_text(*self.AMOUNT_INPUT, amount)
@@ -53,3 +62,37 @@ class TransactionPage(BasePage):
     def submit_request(self) -> None:
         """Click the request button to submit a payment request."""
         self.click(*self.REQUEST_BUTTON)
+
+    def click_return_to_transactions(self) -> None:
+        """Click the return to transactions button."""
+        self.click(*self.RETURN_TO_TRANSACTIONS_BUTTON)
+
+    def is_return_button_visible(self) -> bool:
+        """Check if the return to transactions button is visible."""
+        return self.is_visible(*self.RETURN_TO_TRANSACTIONS_BUTTON)
+
+    def is_paid_text_visible(self) -> bool:
+        """Check if the 'Paid' confirmation text is visible."""
+        return self.is_visible(*self.PAID_TEXT)
+
+    def is_requested_text_visible(self) -> bool:
+        """Check if the 'Requested' confirmation text is visible."""
+        return self.is_visible(*self.REQUESTED_TEXT)
+
+    def is_pay_button_disabled(self) -> bool:
+        """Check if the pay button is disabled."""
+        element = self.find_element(*self.PAY_BUTTON)
+        return not element.is_enabled()
+
+    def is_request_button_disabled(self) -> bool:
+        """Check if the request button is disabled."""
+        element = self.find_element(*self.REQUEST_BUTTON)
+        return not element.is_enabled()
+
+    def click_personal_tab(self) -> None:
+        """Click the personal transactions tab."""
+        self.click(*self.PERSONAL_TAB)
+
+    def is_transaction_list_visible(self) -> bool:
+        """Check if the transaction list is visible."""
+        return self.is_visible(*self.TRANSACTION_LIST)

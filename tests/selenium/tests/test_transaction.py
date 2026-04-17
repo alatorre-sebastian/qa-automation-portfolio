@@ -5,7 +5,6 @@ Validates: Requirements 5.2
 """
 
 import pytest
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -25,11 +24,7 @@ def _login(driver: object) -> None:
     WebDriverWait(driver, 30).until_not(EC.url_contains("/signin"))
 
     # Wait for sidenav username to confirm dashboard is loaded
-    WebDriverWait(driver, 10).until(
-        EC.visibility_of_element_located(
-            (By.CSS_SELECTOR, '[data-test="sidenav-username"]')
-        )
-    )
+    assert login_page.is_sidenav_username_visible()
 
 
 @pytest.mark.transaction
@@ -44,11 +39,7 @@ class TestTransaction:
         transaction_page.navigate_to_new_transaction()
 
         # Wait for user list to load and select the first user
-        WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located(
-                (By.CSS_SELECTOR, '[data-test^="user-list-item-"]')
-            )
-        )
+        transaction_page.wait_for_user_list()
         transaction_page.select_first_user()
 
         # Fill transaction details
@@ -59,20 +50,10 @@ class TestTransaction:
         transaction_page.submit_payment()
 
         # Verify "Paid" text is visible on the confirmation screen
-        paid_text = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located(
-                (By.XPATH, "//*[contains(text(), 'Paid')]")
-            )
-        )
-        assert paid_text.is_displayed()
+        assert transaction_page.is_paid_text_visible()
 
         # Verify return-to-transactions button is visible
-        return_button = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located(
-                (By.CSS_SELECTOR, '[data-test="new-transaction-return-to-transactions"]')
-            )
-        )
-        assert return_button.is_displayed()
+        assert transaction_page.is_return_button_visible()
 
     def test_create_request(self, driver, base_url):
         """A user should be able to create a payment request."""
@@ -82,11 +63,7 @@ class TestTransaction:
         transaction_page.navigate_to_new_transaction()
 
         # Wait for user list to load and select the first user
-        WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located(
-                (By.CSS_SELECTOR, '[data-test^="user-list-item-"]')
-            )
-        )
+        transaction_page.wait_for_user_list()
         transaction_page.select_first_user()
 
         # Fill transaction details
@@ -97,9 +74,71 @@ class TestTransaction:
         transaction_page.submit_request()
 
         # Verify "Requested" text is visible on the confirmation screen
-        requested_text = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located(
-                (By.XPATH, "//*[contains(text(), 'Requested')]")
-            )
-        )
-        assert requested_text.is_displayed()
+        assert transaction_page.is_requested_text_visible()
+
+    def test_zero_amount(self, driver, base_url):
+        """A transaction with zero amount should not be allowed."""
+        _login(driver)
+
+        transaction_page = TransactionPage(driver)
+        transaction_page.navigate_to_new_transaction()
+
+        # Wait for user list to load and select the first user
+        transaction_page.wait_for_user_list()
+        transaction_page.select_first_user()
+
+        # Enter zero as the amount
+        transaction_page.fill_amount("0")
+        transaction_page.fill_description("Zero amount test")
+
+        # Pay and Request buttons should be disabled with zero amount
+        assert transaction_page.is_pay_button_disabled()
+        assert transaction_page.is_request_button_disabled()
+
+    def test_empty_description(self, driver, base_url):
+        """A transaction without a description should not be allowed."""
+        _login(driver)
+
+        transaction_page = TransactionPage(driver)
+        transaction_page.navigate_to_new_transaction()
+
+        # Wait for user list to load and select the first user
+        transaction_page.wait_for_user_list()
+        transaction_page.select_first_user()
+
+        # Enter a valid amount but leave description empty
+        transaction_page.fill_amount("25")
+
+        # Pay and Request buttons should be disabled without a description
+        assert transaction_page.is_pay_button_disabled()
+        assert transaction_page.is_request_button_disabled()
+
+    def test_transaction_detail_after_creation(self, driver, base_url):
+        """After creating a payment, returning to the list should show the transaction."""
+        _login(driver)
+
+        transaction_page = TransactionPage(driver)
+        transaction_page.navigate_to_new_transaction()
+
+        # Wait for user list to load and select the first user
+        transaction_page.wait_for_user_list()
+        transaction_page.select_first_user()
+
+        # Fill transaction details
+        transaction_page.fill_amount("10")
+        transaction_page.fill_description("Detail verification payment")
+
+        # Submit payment
+        transaction_page.submit_payment()
+
+        # Verify confirmation screen
+        assert transaction_page.is_paid_text_visible()
+
+        # Return to transactions list
+        transaction_page.click_return_to_transactions()
+
+        # Navigate to personal tab to see the transaction
+        transaction_page.click_personal_tab()
+
+        # Verify the transaction list is visible
+        assert transaction_page.is_transaction_list_visible()

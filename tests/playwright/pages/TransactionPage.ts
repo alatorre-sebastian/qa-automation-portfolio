@@ -9,6 +9,9 @@ export default class TransactionPage {
   private readonly requestButton: Locator;
   private readonly returnToTransactionsButton: Locator;
   private readonly createAnotherTransactionButton: Locator;
+  private readonly userListItems: Locator;
+  private readonly personalTab: Locator;
+  private readonly transactionList: Locator;
 
   constructor(private page: Page) {
     this.newTransactionButton = page.locator('[data-test="nav-top-new-transaction"]');
@@ -19,6 +22,9 @@ export default class TransactionPage {
     this.requestButton = page.locator('[data-test="transaction-create-submit-request"]');
     this.returnToTransactionsButton = page.locator('[data-test="new-transaction-return-to-transactions"]');
     this.createAnotherTransactionButton = page.locator('[data-test="new-transaction-create-another-transaction"]');
+    this.userListItems = page.locator('[data-test^="user-list-item-"]');
+    this.personalTab = page.locator('[data-test="nav-personal-tab"]');
+    this.transactionList = page.locator('[data-test="transaction-list"]');
   }
 
   async navigateToNewTransaction(): Promise<void> {
@@ -31,6 +37,11 @@ export default class TransactionPage {
 
   async selectUser(userId: string): Promise<void> {
     await this.page.locator(`[data-test="user-list-item-${userId}"]`).click();
+  }
+
+  async selectFirstUser(): Promise<void> {
+    await this.userListItems.first().waitFor({ state: 'visible' });
+    await this.userListItems.first().click();
   }
 
   async fillAmount(amount: string): Promise<void> {
@@ -55,5 +66,30 @@ export default class TransactionPage {
 
   async createAnotherTransaction(): Promise<void> {
     await this.createAnotherTransactionButton.click();
+  }
+
+  getPayButton(): Locator {
+    return this.payButton;
+  }
+
+  getRequestButton(): Locator {
+    return this.requestButton;
+  }
+
+  getReturnToTransactionsButton(): Locator {
+    return this.returnToTransactionsButton;
+  }
+
+  getTransactionList(): Locator {
+    return this.transactionList;
+  }
+
+  async navigateToPersonalTab(): Promise<void> {
+    await this.personalTab.click();
+  }
+
+  /** Get the text content visible on the confirmation screen */
+  getConfirmationText(text: string): Locator {
+    return this.page.getByText(text);
   }
 }

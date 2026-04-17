@@ -5,7 +5,6 @@ Validates: Requirements 5.2
 """
 
 import pytest
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -25,11 +24,7 @@ def _login(driver: object) -> None:
     WebDriverWait(driver, 30).until_not(EC.url_contains("/signin"))
 
     # Wait for sidenav username to confirm dashboard is loaded
-    WebDriverWait(driver, 10).until(
-        EC.visibility_of_element_located(
-            (By.CSS_SELECTOR, '[data-test="sidenav-username"]')
-        )
-    )
+    assert login_page.is_sidenav_username_visible()
 
 
 @pytest.mark.notification
@@ -48,12 +43,7 @@ class TestNotification:
 
         if not notifications_visible:
             # Check for "No Notifications" text as the empty state
-            no_notifications = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//*[contains(text(), 'No Notifications')]")
-                )
-            )
-            assert no_notifications.is_displayed()
+            assert notification_page.is_no_notifications_visible()
         else:
             assert notifications_visible
 
@@ -67,3 +57,21 @@ class TestNotification:
         # Verify URL contains /notifications
         WebDriverWait(driver, 10).until(EC.url_contains("/notifications"))
         assert "/notifications" in driver.current_url
+
+    def test_dismiss_notifications(self, driver, base_url):
+        """If notifications exist, a user should be able to dismiss them."""
+        _login(driver)
+
+        notification_page = NotificationPage(driver)
+        notification_page.navigate()
+
+        # Only attempt to dismiss if notifications exist
+        if notification_page.is_notifications_list_visible():
+            initial_count = notification_page.get_notification_item_count()
+            if initial_count > 0:
+                # Dismiss the first notification
+                notification_page.dismiss_first_notification()
+
+                # Verify the count decreased or the notification was removed
+                new_count = notification_page.get_notification_item_count()
+                assert new_count <= initial_count

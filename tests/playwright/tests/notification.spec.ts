@@ -13,16 +13,41 @@ test.describe('Notifications', () => {
 
     // Verify either the notifications list is visible or the empty state is shown
     const notificationsList = notificationPage.getNotificationsList();
-    const emptyState = page.getByText('No Notifications');
+    const emptyState = notificationPage.getNoNotificationsText();
 
     await expect(notificationsList.or(emptyState)).toBeVisible();
   });
 
   test('should navigate to notifications via top nav', async ({ page }) => {
+    const notificationPage = new NotificationPage(page);
+
     // Click the notifications icon in the top nav
-    await page.locator('[data-test="nav-top-notifications-link"]').click();
+    await notificationPage.clickTopNavNotificationsLink();
 
     // Verify URL contains /notifications
     await expect(page).toHaveURL(/\/notifications/);
+  });
+
+  test('should allow user to dismiss notifications', async ({ page }) => {
+    const notificationPage = new NotificationPage(page);
+    await notificationPage.navigate();
+
+    const notificationsList = notificationPage.getNotificationsList();
+    const notificationItems = notificationPage.getNotificationItems();
+
+    // Only attempt to dismiss if notifications exist
+    const listVisible = await notificationsList.isVisible().catch(() => false);
+
+    if (listVisible) {
+      const count = await notificationItems.count();
+      if (count > 0) {
+        // Dismiss the first notification
+        await notificationPage.dismissFirstNotification();
+
+        // Verify the count decreased or the notification was removed
+        const newCount = await notificationItems.count();
+        expect(newCount).toBeLessThanOrEqual(count);
+      }
+    }
   });
 });

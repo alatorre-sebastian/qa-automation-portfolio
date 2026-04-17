@@ -81,4 +81,19 @@ describe('Sign Up', () => {
     // Submit button should be disabled
     cy.get('[data-test="signup-submit"]').should('be.disabled');
   });
+
+  it('should not allow signup with duplicate username', () => {
+    cy.visit('/signup');
+
+    // Try to register with an existing username
+    cy.get('[data-test="signup-first-name"] input').type('Duplicate');
+    cy.get('[data-test="signup-last-name"] input').type('User');
+    cy.get('[data-test="signup-username"] input').type('Heath93');
+    cy.get('[data-test="signup-password"] input').type('s3cret');
+    cy.get('[data-test="signup-confirmPassword"] input').type('s3cret');
+    cy.get('[data-test="signup-submit"]').click();
+
+    // User should remain on the signup page (not redirected to signin)
+    cy.url().should('include', '/signup');
+  });
 });

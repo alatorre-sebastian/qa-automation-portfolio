@@ -21,8 +21,13 @@ class SignUpPage(BasePage):
     CONFIRM_PASSWORD_INPUT = (By.CSS_SELECTOR, '[data-test="signup-confirmPassword"] input')
     SUBMIT_BUTTON = (By.CSS_SELECTOR, '[data-test="signup-submit"]')
     TITLE = (By.CSS_SELECTOR, '[data-test="signup-title"]')
+    FIRST_NAME_HELPER = (By.CSS_SELECTOR, '#firstName-helper-text')
+    LAST_NAME_HELPER = (By.CSS_SELECTOR, '#lastName-helper-text')
+    USERNAME_HELPER = (By.CSS_SELECTOR, '#username-helper-text')
+    PASSWORD_HELPER = (By.CSS_SELECTOR, '#password-helper-text')
+    CONFIRM_PASSWORD_HELPER = (By.CSS_SELECTOR, '#confirmPassword-helper-text')
 
-    def __init__(self, driver: WebDriver):
+    def __init__(self, driver):
         super().__init__(driver)
 
     def navigate(self) -> None:
@@ -56,3 +61,79 @@ class SignUpPage(BasePage):
     def get_title(self) -> str:
         """Get the text of the signup page title."""
         return self.get_text(*self.TITLE)
+
+    def clear_first_name_and_blur(self) -> None:
+        """Clear the first name field and blur to trigger validation."""
+        element = self.find_element(*self.FIRST_NAME_INPUT)
+        element.clear()
+        self.driver.execute_script("arguments[0].blur();", element)
+
+    def clear_last_name_and_blur(self) -> None:
+        """Clear the last name field and blur to trigger validation."""
+        element = self.find_element(*self.LAST_NAME_INPUT)
+        element.clear()
+        self.driver.execute_script("arguments[0].blur();", element)
+
+    def clear_username_and_blur(self) -> None:
+        """Clear the username field and blur to trigger validation."""
+        element = self.find_element(*self.USERNAME_INPUT)
+        element.clear()
+        self.driver.execute_script("arguments[0].blur();", element)
+
+    def clear_password_and_blur(self) -> None:
+        """Clear the password field and blur to trigger validation."""
+        element = self.find_element(*self.PASSWORD_INPUT)
+        element.clear()
+        self.driver.execute_script("arguments[0].blur();", element)
+
+    def fill_confirm_password_and_blur(self, confirm_password: str) -> None:
+        """Fill the confirm password field and blur to trigger validation."""
+        element = self.find_element(*self.CONFIRM_PASSWORD_INPUT)
+        element.clear()
+        element.send_keys(confirm_password)
+        self.driver.execute_script("arguments[0].blur();", element)
+
+    def get_first_name_helper_text(self) -> str:
+        """Get the first name validation helper text."""
+        return self.get_text(*self.FIRST_NAME_HELPER)
+
+    def get_last_name_helper_text(self) -> str:
+        """Get the last name validation helper text."""
+        return self.get_text(*self.LAST_NAME_HELPER)
+
+    def get_username_helper_text(self) -> str:
+        """Get the username validation helper text."""
+        return self.get_text(*self.USERNAME_HELPER)
+
+    def get_password_helper_text(self) -> str:
+        """Get the password validation helper text."""
+        return self.get_text(*self.PASSWORD_HELPER)
+
+    def get_confirm_password_helper_text(self) -> str:
+        """Get the confirm password validation helper text."""
+        return self.get_text(*self.CONFIRM_PASSWORD_HELPER)
+
+    def is_first_name_helper_visible(self) -> bool:
+        """Check if the first name helper text is visible."""
+        return self.is_visible(*self.FIRST_NAME_HELPER)
+
+    def is_last_name_helper_visible(self) -> bool:
+        """Check if the last name helper text is visible."""
+        return self.is_visible(*self.LAST_NAME_HELPER)
+
+    def is_username_helper_visible(self) -> bool:
+        """Check if the username helper text is visible."""
+        return self.is_visible(*self.USERNAME_HELPER)
+
+    def is_password_helper_visible(self) -> bool:
+        """Check if the password helper text is visible."""
+        return self.is_visible(*self.PASSWORD_HELPER)
+
+    def is_confirm_password_helper_visible(self) -> bool:
+        """Check if the confirm password helper text is visible."""
+        return self.is_visible(*self.CONFIRM_PASSWORD_HELPER)
+
+    def is_submit_disabled(self) -> bool:
+        """Check if the submit button is disabled."""
+        element = self.find_element(*self.SUBMIT_BUTTON)
+        return not element.is_enabled()
