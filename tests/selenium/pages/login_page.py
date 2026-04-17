@@ -56,16 +56,12 @@ class LoginPage(BasePage):
     def clear_username_and_blur(self) -> None:
         """Clear the username field and blur to trigger validation."""
         element = self.find_element(*self.USERNAME_INPUT)
-        element.clear()
-        # Blur by clicking elsewhere
-        self.driver.execute_script("arguments[0].blur();", element)
+        self._set_input_value_and_blur(element, "")
 
     def fill_password_and_blur(self, password: str) -> None:
         """Fill the password field and blur to trigger validation."""
         element = self.find_element(*self.PASSWORD_INPUT)
-        element.clear()
-        element.send_keys(password)
-        self.driver.execute_script("arguments[0].blur();", element)
+        self._set_input_value_and_blur(element, password)
 
     def get_username_helper_text(self) -> str:
         """Get the username validation helper text."""

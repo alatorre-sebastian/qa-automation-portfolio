@@ -78,3 +78,22 @@ class BasePage:
         os.makedirs(SCREENSHOTS_DIR, exist_ok=True)
         filepath = os.path.join(SCREENSHOTS_DIR, f"{name}.png")
         self.driver.save_screenshot(filepath)
+
+    def _set_input_value_and_blur(self, element: WebElement, value: str) -> None:
+        """Set an input's value using the native setter to trigger React's onChange,
+        then dispatch input/change events and blur.
+
+        Selenium's element.clear() doesn't fire React synthetic events, so we
+        use the native HTMLInputElement value setter to properly trigger Formik
+        validation.
+        """
+        self.driver.execute_script(
+            "var nativeInputValueSetter = Object.getOwnPropertyDescriptor("
+            "  window.HTMLInputElement.prototype, 'value').set;"
+            "nativeInputValueSetter.call(arguments[0], arguments[1]);"
+            "arguments[0].dispatchEvent(new Event('input', { bubbles: true }));"
+            "arguments[0].dispatchEvent(new Event('change', { bubbles: true }));"
+            "arguments[0].blur();",
+            element,
+            value,
+        )

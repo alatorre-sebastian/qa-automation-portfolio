@@ -65,33 +65,27 @@ class SignUpPage(BasePage):
     def clear_first_name_and_blur(self) -> None:
         """Clear the first name field and blur to trigger validation."""
         element = self.find_element(*self.FIRST_NAME_INPUT)
-        element.clear()
-        self.driver.execute_script("arguments[0].blur();", element)
+        self._set_input_value_and_blur(element, "")
 
     def clear_last_name_and_blur(self) -> None:
         """Clear the last name field and blur to trigger validation."""
         element = self.find_element(*self.LAST_NAME_INPUT)
-        element.clear()
-        self.driver.execute_script("arguments[0].blur();", element)
+        self._set_input_value_and_blur(element, "")
 
     def clear_username_and_blur(self) -> None:
         """Clear the username field and blur to trigger validation."""
         element = self.find_element(*self.USERNAME_INPUT)
-        element.clear()
-        self.driver.execute_script("arguments[0].blur();", element)
+        self._set_input_value_and_blur(element, "")
 
     def clear_password_and_blur(self) -> None:
         """Clear the password field and blur to trigger validation."""
         element = self.find_element(*self.PASSWORD_INPUT)
-        element.clear()
-        self.driver.execute_script("arguments[0].blur();", element)
+        self._set_input_value_and_blur(element, "")
 
     def fill_confirm_password_and_blur(self, confirm_password: str) -> None:
         """Fill the confirm password field and blur to trigger validation."""
         element = self.find_element(*self.CONFIRM_PASSWORD_INPUT)
-        element.clear()
-        element.send_keys(confirm_password)
-        self.driver.execute_script("arguments[0].blur();", element)
+        self._set_input_value_and_blur(element, confirm_password)
 
     def get_first_name_helper_text(self) -> str:
         """Get the first name validation helper text."""
