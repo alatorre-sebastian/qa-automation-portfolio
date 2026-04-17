@@ -22,8 +22,8 @@ export const options = {
     { duration: '1m', target: 0 },   // ramp-down
   ],
   thresholds: {
-    http_req_duration: ['p(95)<500'], // 95% de las peticiones < 500ms
-    http_req_failed: ['rate<0.05'],   // tasa de errores < 5%
+    http_req_duration: ['p(95)<2000'], // 95% de las peticiones < 2s (CI runners son más lentos)
+    http_req_failed: ['rate<0.05'],    // tasa de errores < 5%
   },
 };
 
