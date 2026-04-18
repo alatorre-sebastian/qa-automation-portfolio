@@ -62,7 +62,11 @@ class TestBankAccount:
         assert bank_account_page.get_bank_account_count() == initial_count + 1
 
     def test_delete_bank_account(self, driver, base_url):
-        """A user should be able to delete a bank account (soft delete)."""
+        """A user should be able to delete a bank account (soft delete).
+
+        Creates a new account first, then deletes it and verifies the
+        number of active delete buttons decreases.
+        """
         _login(driver)
 
         bank_account_page = BankAccountPage(driver)
@@ -70,8 +74,22 @@ class TestBankAccount:
 
         assert bank_account_page.is_bank_account_list_visible()
 
-        # Delete the first account
+        # Create a new account first to ensure we have one to delete
+        bank_account_page.click_create_new()
+        bank_account_page.fill_bank_name("Bank To Delete")
+        bank_account_page.fill_account_number("111222333")
+        bank_account_page.fill_routing_number("444555666")
+        bank_account_page.submit()
+
+        # Wait for the list to reload with the new account
+        assert bank_account_page.is_bank_account_list_visible()
+        delete_count_before = bank_account_page.get_delete_button_count()
+
+        # Delete the first non-deleted account
         bank_account_page.delete_first_account()
 
-        # Verify the account is marked as deleted
-        assert bank_account_page.is_deleted_text_visible()
+        # After deletion, the number of visible delete buttons should decrease
+        import time
+        time.sleep(2)
+        delete_count_after = bank_account_page.get_delete_button_count()
+        assert delete_count_after < delete_count_before

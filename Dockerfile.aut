@@ -22,4 +22,5 @@ RUN cp data/database-seed.json data/database.json
 EXPOSE 3000 3001
 
 # Use yarn start which runs prestart (db seed) + concurrently vite + api
-CMD ["yarn", "start"]
+# Vite needs --host to bind to 0.0.0.0 (accessible outside container)
+CMD ["sh", "-c", "yarn db:seed:dev && npx concurrently 'npx vite --host' 'yarn start:api'"]

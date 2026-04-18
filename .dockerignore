@@ -1,0 +1,13 @@
+# Ignore everything except the AUT source
+tests/
+.git/
+.github/
+.kiro/
+*.md
+Makefile
+.env.example
+
+# Ignore node_modules in the AUT (will be installed during build)
+apps/cypress-realworld-app/node_modules/
+apps/cypress-realworld-app/.nyc_output/
+apps/cypress-realworld-app/cypress/

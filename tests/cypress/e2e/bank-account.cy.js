@@ -5,9 +5,8 @@ describe('Bank Accounts', () => {
 
   beforeEach(function () {
     cy.fixture('users').then((users) => {
-      cy.loginByApi(users.loginUser.username, users.loginUser.password);
+      cy.login(users.loginUser.username, users.loginUser.password);
     });
-    cy.visit('/');
   });
 
   it('should display bank accounts list', () => {

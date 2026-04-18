@@ -5,9 +5,8 @@ describe('Transactions', () => {
 
   beforeEach(function () {
     cy.fixture('users').then((users) => {
-      cy.loginByApi(users.loginUser.username, users.loginUser.password);
+      cy.login(users.loginUser.username, users.loginUser.password);
     });
-    cy.visit('/');
   });
 
   it('should allow a user to create a payment', () => {

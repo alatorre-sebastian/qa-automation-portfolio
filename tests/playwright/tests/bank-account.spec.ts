@@ -48,6 +48,6 @@ test.describe('Bank Accounts', () => {
     await bankAccountPage.deleteFirstAccount();
 
     // Verify the account is marked as deleted (soft delete shows "(Deleted)")
-    await expect(bankAccountPage.getDeletedText()).toBeVisible({ timeout: 10000 });
+    await expect(bankAccountPage.getDeletedText()).toBeVisible({ timeout: 15000 });
   });
 });

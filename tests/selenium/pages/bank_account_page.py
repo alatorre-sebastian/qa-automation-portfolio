@@ -64,6 +64,14 @@ class BankAccountPage(BasePage):
         """Click the delete button on the first bank account."""
         self.click(*self.DELETE_BUTTONS)
 
+    def get_delete_button_count(self) -> int:
+        """Return the number of visible delete buttons."""
+        try:
+            buttons = self.driver.find_elements(*self.DELETE_BUTTONS)
+            return len(buttons)
+        except Exception:
+            return 0
+
     def is_deleted_text_visible(self) -> bool:
         """Check if the '(Deleted)' text is visible."""
         return self.is_visible(*self.DELETED_TEXT)

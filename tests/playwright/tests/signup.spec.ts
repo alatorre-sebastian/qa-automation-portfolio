@@ -5,6 +5,9 @@ import OnboardingPage from '../pages/OnboardingPage';
 import { apiSeedDatabase } from '../helpers/api';
 
 test.describe('Sign Up', () => {
+  // Signup tests must run serially — creating a user and immediately logging in
+  // can be disrupted by parallel workers seeding the database
+  test.describe.configure({ mode: 'serial' });
   test.beforeEach(async ({ request }) => {
     await apiSeedDatabase(request);
   });
