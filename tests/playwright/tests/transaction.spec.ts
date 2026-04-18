@@ -1,31 +1,18 @@
 import { test, expect } from '@playwright/test';
 import { TEST_USER } from '../helpers/auth';
-import { apiLogin, apiSeedDatabase } from '../helpers/api';
 import TransactionPage from '../pages/TransactionPage';
 
-const API_URL = process.env.API_URL || 'http://localhost:3001';
-
 test.describe('Transactions', () => {
-  test.beforeEach(async ({ page, request }) => {
+  test.beforeEach(async ({ page }) => {
     // Seed the database to a known state
-    await apiSeedDatabase(request);
+    const apiUrl = process.env.API_URL || 'http://localhost:3001';
+    await page.request.post(`${apiUrl}/testData/seed`);
 
-    // Log in via API and inject the session cookie into the browser context
-    const loginResponse = await apiLogin(request, TEST_USER.username, TEST_USER.password);
-    const cookies = loginResponse.headers()['set-cookie'];
-    if (cookies) {
-      const sidMatch = cookies.match(/connect\.sid=([^;]+)/);
-      if (sidMatch) {
-        await page.context().addCookies([
-          {
-            name: 'connect.sid',
-            value: sidMatch[1],
-            domain: new URL(API_URL).hostname,
-            path: '/',
-          },
-        ]);
-      }
-    }
+    // Log in via API — page.request shares cookies with the browser context
+    await page.request.post(`${apiUrl}/login`, {
+      data: { username: TEST_USER.username, password: TEST_USER.password },
+    });
+
     await page.goto('/');
     await page.waitForLoadState('domcontentloaded');
   });
