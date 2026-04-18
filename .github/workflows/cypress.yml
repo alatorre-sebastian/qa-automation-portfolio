@@ -48,7 +48,9 @@ jobs:
 
       - name: Run Cypress suite
         working-directory: tests/cypress
-        run: npx cypress run
+        run: |
+          curl -sf http://localhost:3000 > /dev/null 2>&1 || echo "WARNING: AUT may not be available"
+          npx cypress run
 
       - name: Upload Cypress report
         if: always()

@@ -16,11 +16,11 @@ export default class BankAccountPage {
     this.bankAccountList = page.locator('[data-test="bankaccount-list"]');
     this.bankAccountItems = page.locator('[data-test^="bankaccount-list-item-"]');
     this.createNewButton = page.locator('[data-test="bankaccount-new"]');
-    this.bankNameInput = page.locator('[data-test="bankaccount-bankName-input"]');
-    this.accountNumberInput = page.locator('[data-test="bankaccount-accountNumber-input"]');
-    this.routingNumberInput = page.locator('[data-test="bankaccount-routingNumber-input"]');
+    this.bankNameInput = page.locator('[data-test="bankaccount-bankName-input"] input');
+    this.accountNumberInput = page.locator('[data-test="bankaccount-accountNumber-input"] input');
+    this.routingNumberInput = page.locator('[data-test="bankaccount-routingNumber-input"] input');
     this.submitButton = page.locator('[data-test="bankaccount-submit"]');
-    this.deleteButtons = page.locator('[data-test^="bankaccount-delete-"]');
+    this.deleteButtons = page.locator('[data-test="bankaccount-delete"]');
   }
 
   async navigate(): Promise<void> {

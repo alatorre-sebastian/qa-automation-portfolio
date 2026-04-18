@@ -32,9 +32,9 @@ describe('Bank Accounts', () => {
       cy.get('[data-test="bankaccount-new"]').click();
 
       // Fill the form
-      cy.get('[data-test="bankaccount-bankName-input"]').type('Test Bank');
-      cy.get('[data-test="bankaccount-accountNumber-input"]').type('123456789');
-      cy.get('[data-test="bankaccount-routingNumber-input"]').type('987654321');
+      cy.get('[data-test="bankaccount-bankName-input"] input').type('Test Bank');
+      cy.get('[data-test="bankaccount-accountNumber-input"] input').type('123456789');
+      cy.get('[data-test="bankaccount-routingNumber-input"] input').type('987654321');
       cy.get('[data-test="bankaccount-submit"]').click();
 
       // Verify the new account appears
@@ -50,7 +50,7 @@ describe('Bank Accounts', () => {
     cy.get('[data-test="bankaccount-list"]').should('be.visible');
 
     // Delete the first account
-    cy.get('[data-test^="bankaccount-delete-"]').first().click();
+    cy.get('[data-test="bankaccount-delete"]').first().click();
 
     // Verify the account is marked as deleted (soft delete shows "(Deleted)")
     cy.contains('(Deleted)').should('be.visible');

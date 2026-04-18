@@ -21,7 +21,7 @@ class BankAccountPage(BasePage):
     ACCOUNT_NUMBER_INPUT = (By.CSS_SELECTOR, '[data-test="bankaccount-accountNumber-input"] input')
     ROUTING_NUMBER_INPUT = (By.CSS_SELECTOR, '[data-test="bankaccount-routingNumber-input"] input')
     SUBMIT_BUTTON = (By.CSS_SELECTOR, '[data-test="bankaccount-submit"]')
-    DELETE_BUTTONS = (By.CSS_SELECTOR, '[data-test^="bankaccount-delete-"]')
+    DELETE_BUTTONS = (By.CSS_SELECTOR, '[data-test="bankaccount-delete"]')
     DELETED_TEXT = (By.XPATH, "//*[contains(text(), '(Deleted)')]")
 
     def __init__(self, driver: WebDriver):

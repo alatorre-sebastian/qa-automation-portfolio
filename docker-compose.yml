@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile.aut
     network_mode: host
+    restart: unless-stopped
     environment:
       - NODE_ENV=development
     healthcheck:
