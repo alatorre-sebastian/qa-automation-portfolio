@@ -36,13 +36,11 @@ Cypress.Commands.add('login', (username, password) => {
  *   cy.loginByApi('Heath93', 's3cret');
  */
 Cypress.Commands.add('loginByApi', (username, password) => {
-  cy.session([username, password], () => {
-    const apiUrl = Cypress.env('apiUrl') || 'http://localhost:3001';
-    cy.request({
-      method: 'POST',
-      url: `${apiUrl}/login`,
-      body: { username, password },
-    });
+  const apiUrl = Cypress.env('apiUrl') || 'http://localhost:3001';
+  cy.request({
+    method: 'POST',
+    url: `${apiUrl}/login`,
+    body: { username, password },
   });
 });
 

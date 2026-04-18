@@ -1,6 +1,9 @@
 describe('Notifications', () => {
-  beforeEach(function () {
+  before(function () {
     cy.seedDatabase();
+  });
+
+  beforeEach(function () {
     cy.fixture('users').then((users) => {
       cy.loginByApi(users.loginUser.username, users.loginUser.password);
     });
