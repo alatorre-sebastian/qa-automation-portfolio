@@ -53,4 +53,6 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 Cypress.Commands.add('seedDatabase', () => {
   const apiUrl = Cypress.env('apiUrl') || 'http://localhost:3001';
   cy.request('POST', `${apiUrl}/testData/seed`);
+  // Brief wait for the database to stabilize after seeding
+  cy.wait(1000);
 });

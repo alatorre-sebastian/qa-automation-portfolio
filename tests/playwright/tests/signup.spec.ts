@@ -8,7 +8,6 @@ test.describe('Sign Up', () => {
   test.beforeEach(async ({ request }) => {
     await apiSeedDatabase(request);
   });
-  });
 
   test('should allow a visitor to sign up', async ({ page }) => {
     const signUpPage = new SignUpPage(page);
