@@ -10,6 +10,8 @@ export default class TransactionPage {
   private readonly returnToTransactionsButton: Locator;
   private readonly createAnotherTransactionButton: Locator;
   private readonly userListItems: Locator;
+  private readonly publicTab: Locator;
+  private readonly contactsTab: Locator;
   private readonly personalTab: Locator;
   private readonly transactionList: Locator;
 
@@ -23,6 +25,8 @@ export default class TransactionPage {
     this.returnToTransactionsButton = page.locator('[data-test="new-transaction-return-to-transactions"]');
     this.createAnotherTransactionButton = page.locator('[data-test="new-transaction-create-another-transaction"]');
     this.userListItems = page.locator('[data-test^="user-list-item-"]');
+    this.publicTab = page.locator('[data-test="nav-public-tab"]');
+    this.contactsTab = page.locator('[data-test="nav-contacts-tab"]');
     this.personalTab = page.locator('[data-test="nav-personal-tab"]');
     this.transactionList = page.locator('[data-test="transaction-list"]');
   }
@@ -82,6 +86,14 @@ export default class TransactionPage {
 
   getTransactionList(): Locator {
     return this.transactionList;
+  }
+
+  async navigateToPublicTab(): Promise<void> {
+    await this.publicTab.click();
+  }
+
+  async navigateToContactsTab(): Promise<void> {
+    await this.contactsTab.click();
   }
 
   async navigateToPersonalTab(): Promise<void> {

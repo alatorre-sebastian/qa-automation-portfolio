@@ -77,3 +77,21 @@ class TestLogin:
 
         # User should remain on the signin page
         assert "/signin" in driver.current_url
+
+    def test_logout_and_redirect_to_signin(self, driver, base_url):
+        """After logging in, clicking logout should redirect to the signin page."""
+        login_page = LoginPage(driver)
+        login_page.navigate()
+        login_page.fill_username("Heath93")
+        login_page.fill_password("s3cret")
+        login_page.submit()
+
+        WebDriverWait(driver, 30).until_not(EC.url_contains("/signin"))
+        assert login_page.is_sidenav_username_visible()
+
+        # Click logout
+        login_page.click_logout()
+
+        # Verify redirect to signin page
+        WebDriverWait(driver, 10).until(EC.url_contains("/signin"))
+        assert "/signin" in driver.current_url

@@ -22,6 +22,7 @@ class LoginPage(BasePage):
     SIDENAV_USERNAME = (By.CSS_SELECTOR, '[data-test="sidenav-username"]')
     USERNAME_HELPER_TEXT = (By.CSS_SELECTOR, '#username-helper-text')
     PASSWORD_HELPER_TEXT = (By.CSS_SELECTOR, '#password-helper-text')
+    LOGOUT_BUTTON = (By.CSS_SELECTOR, '[data-test="sidenav-signout"]')
 
     def __init__(self, driver: WebDriver):
         super().__init__(driver)
@@ -97,3 +98,7 @@ class LoginPage(BasePage):
     def get_sidenav_username_text(self) -> str:
         """Get the text of the sidenav username element."""
         return self.get_text(*self.SIDENAV_USERNAME)
+
+    def click_logout(self) -> None:
+        """Click the logout button in the sidenav."""
+        self.click(*self.LOGOUT_BUTTON)

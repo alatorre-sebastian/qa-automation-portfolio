@@ -148,3 +148,33 @@ class TestTransaction:
 
         # Verify the transaction list is visible
         assert transaction_page.is_transaction_list_visible()
+
+    def test_view_personal_transactions_tab(self, driver, base_url):
+        """The personal transactions tab should display a transaction list."""
+        _login(driver)
+
+        transaction_page = TransactionPage(driver)
+        transaction_page.click_personal_tab()
+
+        assert transaction_page.is_transaction_list_visible()
+
+    def test_view_public_transactions_tab(self, driver, base_url):
+        """The public transactions tab should display a transaction list."""
+        _login(driver)
+
+        transaction_page = TransactionPage(driver)
+        transaction_page.click_public_tab()
+
+        assert transaction_page.is_transaction_list_visible()
+
+    def test_view_contacts_transactions_tab(self, driver, base_url):
+        """The contacts transactions tab should display a list or empty state."""
+        _login(driver)
+
+        transaction_page = TransactionPage(driver)
+        transaction_page.click_contacts_tab()
+
+        # Contacts tab may show a list or empty state
+        list_visible = transaction_page.is_transaction_list_visible()
+        if not list_visible:
+            assert transaction_page.is_no_transactions_visible()

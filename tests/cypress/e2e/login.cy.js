@@ -55,4 +55,14 @@ describe('Login', () => {
     // User should remain on the signin page
     cy.url().should('include', '/signin');
   });
+
+  it('should logout and redirect to signin page', function () {
+    cy.login(this.users.loginUser.username, this.users.loginUser.password);
+
+    // Click logout in the sidenav
+    cy.get('[data-test="sidenav-signout"]').click();
+
+    // Verify redirect to signin page
+    cy.url().should('include', '/signin');
+  });
 });

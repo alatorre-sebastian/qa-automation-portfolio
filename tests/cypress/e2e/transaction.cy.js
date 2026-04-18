@@ -84,6 +84,31 @@ describe('Transactions', () => {
     cy.get('[data-test="transaction-create-submit-request"]').should('be.disabled');
   });
 
+  it('should view personal transactions tab', () => {
+    cy.get('[data-test="nav-personal-tab"]').click();
+
+    cy.get('[data-test="transaction-list"]', { timeout: 10000 }).should('be.visible');
+  });
+
+  it('should view public transactions tab', () => {
+    cy.get('[data-test="nav-public-tab"]').click();
+
+    cy.get('[data-test="transaction-list"]', { timeout: 10000 }).should('be.visible');
+  });
+
+  it('should view contacts transactions tab', () => {
+    cy.get('[data-test="nav-contacts-tab"]').click();
+
+    // Contacts tab may show a list or empty state
+    cy.get('body').then(($body) => {
+      if ($body.find('[data-test="transaction-list"]').length > 0) {
+        cy.get('[data-test="transaction-list"]').should('be.visible');
+      } else {
+        cy.contains('No Transactions').should('be.visible');
+      }
+    });
+  });
+
   it('should display transaction detail after creation', () => {
     // Navigate to new transaction
     cy.get('[data-test="nav-top-new-transaction"]').click();

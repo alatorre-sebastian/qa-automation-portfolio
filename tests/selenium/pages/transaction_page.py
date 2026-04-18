@@ -24,9 +24,12 @@ class TransactionPage(BasePage):
     RETURN_TO_TRANSACTIONS_BUTTON = (By.CSS_SELECTOR, '[data-test="new-transaction-return-to-transactions"]')
     USER_LIST_ITEMS = (By.CSS_SELECTOR, '[data-test^="user-list-item-"]')
     PERSONAL_TAB = (By.CSS_SELECTOR, '[data-test="nav-personal-tab"]')
+    PUBLIC_TAB = (By.CSS_SELECTOR, '[data-test="nav-public-tab"]')
+    CONTACTS_TAB = (By.CSS_SELECTOR, '[data-test="nav-contacts-tab"]')
     TRANSACTION_LIST = (By.CSS_SELECTOR, '[data-test="transaction-list"]')
     PAID_TEXT = (By.XPATH, "//*[contains(text(), 'Paid')]")
     REQUESTED_TEXT = (By.XPATH, "//*[contains(text(), 'Requested')]")
+    NO_TRANSACTIONS_TEXT = (By.XPATH, "//*[contains(text(), 'No Transactions')]")
 
     def __init__(self, driver: WebDriver):
         super().__init__(driver)
@@ -103,6 +106,18 @@ class TransactionPage(BasePage):
         """Click the personal transactions tab."""
         self.click(*self.PERSONAL_TAB)
 
+    def click_public_tab(self) -> None:
+        """Click the public transactions tab."""
+        self.click(*self.PUBLIC_TAB)
+
+    def click_contacts_tab(self) -> None:
+        """Click the contacts transactions tab."""
+        self.click(*self.CONTACTS_TAB)
+
     def is_transaction_list_visible(self) -> bool:
         """Check if the transaction list is visible."""
         return self.is_visible(*self.TRANSACTION_LIST)
+
+    def is_no_transactions_visible(self) -> bool:
+        """Check if the 'No Transactions' empty state is visible."""
+        return self.is_visible(*self.NO_TRANSACTIONS_TEXT)

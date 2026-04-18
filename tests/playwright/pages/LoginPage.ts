@@ -10,6 +10,7 @@ export default class LoginPage {
   private readonly usernameHelperText: Locator;
   private readonly passwordHelperText: Locator;
   private readonly sidenavUsername: Locator;
+  private readonly logoutButton: Locator;
 
   constructor(private page: Page) {
     this.usernameField = page.locator('[data-test="signin-username"] input');
@@ -21,6 +22,7 @@ export default class LoginPage {
     this.usernameHelperText = page.locator('#username-helper-text');
     this.passwordHelperText = page.locator('#password-helper-text');
     this.sidenavUsername = page.locator('[data-test="sidenav-username"]');
+    this.logoutButton = page.locator('[data-test="sidenav-signout"]');
   }
 
   async navigate(): Promise<void> {
@@ -80,5 +82,9 @@ export default class LoginPage {
 
   getSidenavUsername(): Locator {
     return this.sidenavUsername;
+  }
+
+  async clickLogout(): Promise<void> {
+    await this.logoutButton.click();
   }
 }

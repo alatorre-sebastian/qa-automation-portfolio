@@ -92,6 +92,33 @@ test.describe('Transactions', () => {
     await expect(transactionPage.getRequestButton()).toBeDisabled();
   });
 
+  test('should view personal transactions tab', async ({ page }) => {
+    const transactionPage = new TransactionPage(page);
+
+    await transactionPage.navigateToPersonalTab();
+
+    await expect(transactionPage.getTransactionList()).toBeVisible({ timeout: 10000 });
+  });
+
+  test('should view public transactions tab', async ({ page }) => {
+    const transactionPage = new TransactionPage(page);
+
+    await transactionPage.navigateToPublicTab();
+
+    await expect(transactionPage.getTransactionList()).toBeVisible({ timeout: 10000 });
+  });
+
+  test('should view contacts transactions tab', async ({ page }) => {
+    const transactionPage = new TransactionPage(page);
+
+    await transactionPage.navigateToContactsTab();
+
+    // Contacts tab may show a list or empty state
+    const transactionList = transactionPage.getTransactionList();
+    const emptyState = page.getByText('No Transactions');
+    await expect(transactionList.or(emptyState)).toBeVisible({ timeout: 10000 });
+  });
+
   test('should display transaction detail after creation', async ({ page }) => {
     const transactionPage = new TransactionPage(page);
 

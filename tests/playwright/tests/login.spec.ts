@@ -55,4 +55,16 @@ test.describe('Login', () => {
     // User should remain on the signin page
     await expect(page).toHaveURL(/\/signin/);
   });
+
+  test('should logout and redirect to signin page', async ({ page }) => {
+    await login(page, TEST_USER.username, TEST_USER.password);
+
+    const loginPage = new LoginPage(page);
+
+    // Click logout in the sidenav
+    await loginPage.clickLogout();
+
+    // Verify redirect to signin page
+    await expect(page).toHaveURL(/\/signin/, { timeout: 10000 });
+  });
 });
