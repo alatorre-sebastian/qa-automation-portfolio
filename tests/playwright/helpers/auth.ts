@@ -1,4 +1,5 @@
 import { type Page, expect } from '@playwright/test';
+import LoginPage from '../pages/LoginPage';
 
 /** Default test user credentials from the AUT seed data */
 export const TEST_USER = {
@@ -12,10 +13,11 @@ export const TEST_USER = {
  * which triggers a full page navigation.
  */
 export async function login(page: Page, username: string, password: string): Promise<void> {
-  await page.goto('/signin');
-  await page.locator('[data-test="signin-username"] input').fill(username);
-  await page.locator('[data-test="signin-password"] input').fill(password);
-  await page.locator('[data-test="signin-submit"]').click();
+  const loginPage = new LoginPage(page);
+  await loginPage.navigate();
+  await loginPage.fillUsername(username);
+  await loginPage.fillPassword(password);
+  await loginPage.submit();
 
   // The app sets window.location.pathname = "/" which causes a full page reload.
   // Wait for the URL to change away from /signin.

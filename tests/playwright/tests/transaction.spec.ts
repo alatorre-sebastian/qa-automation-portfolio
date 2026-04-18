@@ -1,10 +1,33 @@
 import { test, expect } from '@playwright/test';
-import { login, TEST_USER } from '../helpers/auth';
+import { TEST_USER } from '../helpers/auth';
+import { apiLogin, apiSeedDatabase } from '../helpers/api';
 import TransactionPage from '../pages/TransactionPage';
 
+const API_URL = process.env.API_URL || 'http://localhost:3001';
+
 test.describe('Transactions', () => {
-  test.beforeEach(async ({ page }) => {
-    await login(page, TEST_USER.username, TEST_USER.password);
+  test.beforeEach(async ({ page, request }) => {
+    // Seed the database to a known state
+    await apiSeedDatabase(request);
+
+    // Log in via API and inject the session cookie into the browser context
+    const loginResponse = await apiLogin(request, TEST_USER.username, TEST_USER.password);
+    const cookies = loginResponse.headers()['set-cookie'];
+    if (cookies) {
+      const sidMatch = cookies.match(/connect\.sid=([^;]+)/);
+      if (sidMatch) {
+        await page.context().addCookies([
+          {
+            name: 'connect.sid',
+            value: sidMatch[1],
+            domain: new URL(API_URL).hostname,
+            path: '/',
+          },
+        ]);
+      }
+    }
+    await page.goto('/');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('should allow a user to create a payment', async ({ page }) => {

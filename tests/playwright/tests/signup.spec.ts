@@ -2,8 +2,14 @@ import { test, expect } from '@playwright/test';
 import SignUpPage from '../pages/SignUpPage';
 import LoginPage from '../pages/LoginPage';
 import OnboardingPage from '../pages/OnboardingPage';
+import { apiSeedDatabase } from '../helpers/api';
 
 test.describe('Sign Up', () => {
+  test.beforeEach(async ({ request }) => {
+    // Seed the database to a known state before each signup test
+    await apiSeedDatabase(request);
+  });
+
   test('should allow a visitor to sign up', async ({ page }) => {
     const signUpPage = new SignUpPage(page);
     await signUpPage.navigate();

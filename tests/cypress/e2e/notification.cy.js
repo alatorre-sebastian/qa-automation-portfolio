@@ -1,8 +1,10 @@
 describe('Notifications', () => {
   beforeEach(function () {
+    cy.seedDatabase();
     cy.fixture('users').then((users) => {
-      cy.login(users.loginUser.username, users.loginUser.password);
+      cy.loginByApi(users.loginUser.username, users.loginUser.password);
     });
+    cy.visit('/');
   });
 
   it('should display notifications list', () => {

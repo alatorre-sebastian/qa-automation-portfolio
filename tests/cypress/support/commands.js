@@ -24,3 +24,33 @@ Cypress.Commands.add('login', (username, password) => {
   cy.url().should('not.include', '/signin');
   cy.get('[data-test="sidenav-username"]').should('be.visible');
 });
+
+/**
+ * Logs in via the API (faster than UI login). Sets the session cookie
+ * so subsequent cy.visit() calls are authenticated.
+ *
+ * @param {string} username - The username to log in with.
+ * @param {string} password - The password to log in with.
+ *
+ * @example
+ *   cy.loginByApi('Heath93', 's3cret');
+ */
+Cypress.Commands.add('loginByApi', (username, password) => {
+  const apiUrl = Cypress.env('apiUrl') || 'http://localhost:3001';
+  cy.request({
+    method: 'POST',
+    url: `${apiUrl}/login`,
+    body: { username, password },
+  });
+});
+
+/**
+ * Reset the database to its seed state via the API.
+ *
+ * @example
+ *   cy.seedDatabase();
+ */
+Cypress.Commands.add('seedDatabase', () => {
+  const apiUrl = Cypress.env('apiUrl') || 'http://localhost:3001';
+  cy.request('POST', `${apiUrl}/testData/seed`);
+});

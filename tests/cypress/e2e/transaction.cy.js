@@ -1,8 +1,10 @@
 describe('Transactions', () => {
   beforeEach(function () {
+    cy.seedDatabase();
     cy.fixture('users').then((users) => {
-      cy.login(users.loginUser.username, users.loginUser.password);
+      cy.loginByApi(users.loginUser.username, users.loginUser.password);
     });
+    cy.visit('/');
   });
 
   it('should allow a user to create a payment', () => {

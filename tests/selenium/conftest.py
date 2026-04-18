@@ -1,9 +1,15 @@
 import os
+import sys
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
+
+# Ensure the helpers package is importable
+sys.path.insert(0, os.path.dirname(__file__))
+
+from helpers.api_client import ApiClient
 
 SCREENSHOTS_DIR = os.path.join(os.path.dirname(__file__), "screenshots")
 REPORTS_DIR = os.path.join(os.path.dirname(__file__), "reports")
@@ -51,3 +57,9 @@ def pytest_runtest_makereport(item, call):
             test_name = item.nodeid.replace("::", "_").replace("/", "_")
             screenshot_path = os.path.join(SCREENSHOTS_DIR, f"{test_name}.png")
             driver.save_screenshot(screenshot_path)
+
+
+@pytest.fixture
+def api_client():
+    """Provide a fresh ApiClient instance for API-level tests."""
+    return ApiClient()
