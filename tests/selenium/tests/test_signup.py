@@ -26,21 +26,20 @@ class TestSignUp:
 
         # Fill sign-up form with a unique username
         unique_username = f"TestUser{int(time.time())}"
-        signup_page.fill_first_name("Bob")
-        signup_page.fill_last_name("Ross")
-        signup_page.fill_username(unique_username)
-        signup_page.fill_password("s3cret")
-        signup_page.fill_confirm_password("s3cret")
-        signup_page.submit()
+        signup_page.fill_signup_form_and_submit(
+            first_name="Bob",
+            last_name="Ross",
+            username=unique_username,
+            password="s3cret",
+            confirm_password="s3cret",
+        )
 
         # After signup, user is redirected to /signin
         WebDriverWait(driver, 10).until(EC.url_contains("/signin"))
 
         # Login with the new credentials
         login_page = LoginPage(driver)
-        login_page.fill_username(unique_username)
-        login_page.fill_password("s3cret")
-        login_page.submit()
+        login_page.fill_login_form_and_submit(unique_username, "s3cret")
 
         # After login the app performs a full page reload.
         # Wait for the URL to change away from /signin.
@@ -112,12 +111,13 @@ class TestSignUp:
         signup_page.navigate()
 
         # Try to register with an existing username
-        signup_page.fill_first_name("Duplicate")
-        signup_page.fill_last_name("User")
-        signup_page.fill_username("Heath93")
-        signup_page.fill_password("s3cret")
-        signup_page.fill_confirm_password("s3cret")
-        signup_page.submit()
+        signup_page.fill_signup_form_and_submit(
+            first_name="Duplicate",
+            last_name="User",
+            username="Heath93",
+            password="s3cret",
+            confirm_password="s3cret",
+        )
 
         # User should remain on the signup page (not redirected to signin)
         assert "/signup" in driver.current_url

@@ -18,9 +18,7 @@ test.describe('Login', () => {
   test('should display error for invalid credentials', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.navigate();
-    await loginPage.fillUsername('invalidUser');
-    await loginPage.fillPassword('invalidPassword');
-    await loginPage.submit();
+    await loginPage.fillLoginFormAndSubmit('invalidUser', 'invalidPassword');
 
     const errorMessage = await loginPage.getErrorMessage();
     expect(errorMessage).toContain('Username or password is invalid');

@@ -53,6 +53,12 @@ class LoginPage(BasePage):
         self.fill_password(password)
         self.submit()
 
+    def fill_login_form_and_submit(self, username: str, password: str) -> None:
+        """Fill the login form and submit (without navigating)."""
+        self.fill_username(username)
+        self.fill_password(password)
+        self.submit()
+
     def clear_username_and_blur(self) -> None:
         """Clear the username field and blur to trigger validation."""
         element = self.find_element(*self.USERNAME_INPUT)

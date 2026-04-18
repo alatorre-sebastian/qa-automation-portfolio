@@ -39,6 +39,13 @@ export default class LoginPage {
     await this.submitButton.click();
   }
 
+  /** Fill the login form and submit */
+  async fillLoginFormAndSubmit(username: string, password: string): Promise<void> {
+    await this.fillUsername(username);
+    await this.fillPassword(password);
+    await this.submit();
+  }
+
   async getErrorMessage(): Promise<string> {
     return (await this.errorAlert.textContent()) ?? '';
   }

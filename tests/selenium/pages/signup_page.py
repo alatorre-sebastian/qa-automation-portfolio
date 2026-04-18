@@ -58,6 +58,22 @@ class SignUpPage(BasePage):
         """Click the sign-up submit button."""
         self.click(*self.SUBMIT_BUTTON)
 
+    def fill_signup_form_and_submit(
+        self,
+        first_name: str,
+        last_name: str,
+        username: str,
+        password: str,
+        confirm_password: str,
+    ) -> None:
+        """Fill the entire signup form and submit."""
+        self.fill_first_name(first_name)
+        self.fill_last_name(last_name)
+        self.fill_username(username)
+        self.fill_password(password)
+        self.fill_confirm_password(confirm_password)
+        self.submit()
+
     def get_title(self) -> str:
         """Get the text of the signup page title."""
         return self.get_text(*self.TITLE)

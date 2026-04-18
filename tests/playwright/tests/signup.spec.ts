@@ -18,21 +18,20 @@ test.describe('Sign Up', () => {
 
     // Fill sign-up form with a unique username
     const uniqueUsername = `TestUser${Date.now()}`;
-    await signUpPage.fillFirstName('Bob');
-    await signUpPage.fillLastName('Ross');
-    await signUpPage.fillUsername(uniqueUsername);
-    await signUpPage.fillPassword('s3cret');
-    await signUpPage.fillConfirmPassword('s3cret');
-    await signUpPage.submit();
+    await signUpPage.fillSignUpFormAndSubmit({
+      firstName: 'Bob',
+      lastName: 'Ross',
+      username: uniqueUsername,
+      password: 's3cret',
+      confirmPassword: 's3cret',
+    });
 
     // After signup, user is redirected to signin
     await page.waitForURL(/\/signin/);
 
     // Login with the new credentials
     const loginPage = new LoginPage(page);
-    await loginPage.fillUsername(uniqueUsername);
-    await loginPage.fillPassword('s3cret');
-    await loginPage.submit();
+    await loginPage.fillLoginFormAndSubmit(uniqueUsername, 's3cret');
 
     // After login the app performs a full page reload
     // Wait for the URL to change away from /signin
@@ -106,12 +105,13 @@ test.describe('Sign Up', () => {
     await signUpPage.navigate();
 
     // Try to register with an existing username
-    await signUpPage.fillFirstName('Duplicate');
-    await signUpPage.fillLastName('User');
-    await signUpPage.fillUsername('Heath93');
-    await signUpPage.fillPassword('s3cret');
-    await signUpPage.fillConfirmPassword('s3cret');
-    await signUpPage.submit();
+    await signUpPage.fillSignUpFormAndSubmit({
+      firstName: 'Duplicate',
+      lastName: 'User',
+      username: 'Heath93',
+      password: 's3cret',
+      confirmPassword: 's3cret',
+    });
 
     // User should remain on the signup page (not redirected to signin)
     await expect(page).toHaveURL(/\/signup/);

@@ -59,6 +59,22 @@ export default class SignUpPage {
     await this.submitButton.click();
   }
 
+  /** Fill the entire signup form and submit */
+  async fillSignUpFormAndSubmit(user: {
+    firstName: string;
+    lastName: string;
+    username: string;
+    password: string;
+    confirmPassword: string;
+  }): Promise<void> {
+    await this.fillFirstName(user.firstName);
+    await this.fillLastName(user.lastName);
+    await this.fillUsername(user.username);
+    await this.fillPassword(user.password);
+    await this.fillConfirmPassword(user.confirmPassword);
+    await this.submit();
+  }
+
   async getTitle(): Promise<string> {
     return (await this.title.textContent()) ?? '';
   }

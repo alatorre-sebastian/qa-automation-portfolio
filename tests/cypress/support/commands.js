@@ -56,3 +56,25 @@ Cypress.Commands.add('seedDatabase', () => {
   // Brief wait for the database to stabilize after seeding
   cy.wait(1000);
 });
+
+/**
+ * Fill the signup form and submit.
+ *
+ * @param {Object} user - User data object
+ * @param {string} user.firstName
+ * @param {string} user.lastName
+ * @param {string} user.username
+ * @param {string} user.password
+ * @param {string} user.confirmPassword
+ *
+ * @example
+ *   cy.fillSignUpFormAndSubmit({ firstName: 'Bob', lastName: 'Ross', username: 'bob123', password: 's3cret', confirmPassword: 's3cret' });
+ */
+Cypress.Commands.add('fillSignUpFormAndSubmit', (user) => {
+  cy.get('[data-test="signup-first-name"] input').type(user.firstName);
+  cy.get('[data-test="signup-last-name"] input').type(user.lastName);
+  cy.get('[data-test="signup-username"] input').type(user.username);
+  cy.get('[data-test="signup-password"] input').type(user.password);
+  cy.get('[data-test="signup-confirmPassword"] input').type(user.confirmPassword);
+  cy.get('[data-test="signup-submit"]').click();
+});

@@ -5,12 +5,13 @@ describe('Sign Up', () => {
     cy.visit('/signup');
 
     // Fill sign-up form
-    cy.get('[data-test="signup-first-name"] input').type('Bob');
-    cy.get('[data-test="signup-last-name"] input').type('Ross');
-    cy.get('[data-test="signup-username"] input').type(uniqueUsername);
-    cy.get('[data-test="signup-password"] input').type('s3cret');
-    cy.get('[data-test="signup-confirmPassword"] input').type('s3cret');
-    cy.get('[data-test="signup-submit"]').click();
+    cy.fillSignUpFormAndSubmit({
+      firstName: 'Bob',
+      lastName: 'Ross',
+      username: uniqueUsername,
+      password: 's3cret',
+      confirmPassword: 's3cret',
+    });
 
     // After signup, user is redirected to signin
     cy.url().should('include', '/signin');
@@ -86,12 +87,13 @@ describe('Sign Up', () => {
     cy.visit('/signup');
 
     // Try to register with an existing username
-    cy.get('[data-test="signup-first-name"] input').type('Duplicate');
-    cy.get('[data-test="signup-last-name"] input').type('User');
-    cy.get('[data-test="signup-username"] input').type('Heath93');
-    cy.get('[data-test="signup-password"] input').type('s3cret');
-    cy.get('[data-test="signup-confirmPassword"] input').type('s3cret');
-    cy.get('[data-test="signup-submit"]').click();
+    cy.fillSignUpFormAndSubmit({
+      firstName: 'Duplicate',
+      lastName: 'User',
+      username: 'Heath93',
+      password: 's3cret',
+      confirmPassword: 's3cret',
+    });
 
     // User should remain on the signup page (not redirected to signin)
     cy.url().should('include', '/signup');
